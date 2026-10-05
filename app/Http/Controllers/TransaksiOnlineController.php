@@ -11,17 +11,30 @@ class TransaksiOnlineController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $transaksionline = TransaksiOnline::with('iklanonline')
-            ->latest()
-            ->paginate(10);
+        $query = TransaksiOnline::with('iklanonline')->latest();
 
-        // 2. Ambil Data Master Iklan (Untuk Dropdown di Modal Edit)
-        // Tanpa ini, dropdown di modal edit akan kosong/error
+        if ($request->filled('q')) {
+            $keyword = $request->q;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('nofakturonline', 'like', "%{$keyword}%")
+                  ->orWhere('nama_pemasangonline', 'like', "%{$keyword}%")
+                  ->orWhere('sales_iklanonline', 'like', "%{$keyword}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'lunas') {
+                $query->where('piutang_transaksionline', '<=', 0);
+            } elseif ($request->status === 'piutang') {
+                $query->where('piutang_transaksionline', '>', 0);
+            }
+        }
+
+        $transaksionline = $query->paginate(10)->withQueryString();
         $iklanonline = IklanOnline::all();
 
-        // 3. Kirim ke View
         return view('page.transaksionline.index', compact('transaksionline', 'iklanonline'));
     }
 

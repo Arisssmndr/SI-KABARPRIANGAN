@@ -4,9 +4,9 @@
         <!-- Header Halaman Bersih -->
         <div class="flex items-center justify-between">
             <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-                Tambah Transaksi Iklan Online
+                Tambah Transaksi Iklan Koran
             </h1>
-            <a href="{{ route('transaksionline.index') }}" 
+            <a href="{{ route('transaksikoran.index') }}" 
                class="inline-flex items-center px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg shadow-xs transition">
                 &larr; Kembali
             </a>
@@ -23,7 +23,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('transaksionline.store') }}">
+        <form method="POST" action="{{ route('transaksikoran.store') }}">
             @csrf
 
             <div class="bg-white border border-slate-300 rounded-xl p-6 sm:p-8 shadow-xs space-y-6">
@@ -37,12 +37,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">No Faktur</label>
-                            <input type="text" name="nofakturonline" value="{{ $nofakturonline ?? 'FKONL001' }}" readonly 
+                            <input type="text" name="nofakturkoran" value="{{ $nofakturkoran }}" readonly 
                                    class="w-full h-10 px-3.5 bg-slate-100 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 cursor-not-allowed" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Tanggal Transaksi</label>
-                            <input type="date" name="tanggal_transaksionline" value="{{ date('Y-m-d') }}" required 
+                            <input type="date" name="tanggal_transaksikoran" value="{{ date('Y-m-d') }}" required 
                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                         </div>
                     </div>
@@ -50,65 +50,76 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Pemasang</label>
-                            <input type="text" name="nama_pemasangonline" required placeholder="Masukkan nama pemasang" 
+                            <input type="text" name="nama_pemasangkoran" required placeholder="Masukkan nama pemasang" 
                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Sales / Marketing</label>
-                            <input type="text" name="sales_iklanonline" required placeholder="Masukkan nama sales" 
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Sales / Petugas Iklan</label>
+                            <input type="text" name="sales_iklankoran" required placeholder="Masukkan nama sales" 
                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">Alamat Pemasang</label>
-                        <textarea name="alamat_pemasangonline" rows="2" required placeholder="Masukkan alamat pemasang..." 
+                        <textarea name="alamat_pemasangkoran" rows="2" required placeholder="Masukkan alamat pemasang..." 
                                   class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition"></textarea>
                     </div>
                 </div>
 
-                <!-- Bagian 2: Spesifikasi Iklan Online -->
+                <!-- Bagian 2: Spesifikasi Iklan Koran -->
                 <div class="space-y-4 pt-2">
                     <h2 class="text-sm font-bold text-slate-900 pb-2 border-b border-slate-200">
-                        Spesifikasi Iklan Online
+                        Spesifikasi Iklan Koran
                     </h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Jenis Iklan Online</label>
-                            <select name="id_iklanonline" required 
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Jenis Iklan Koran</label>
+                            <select name="id_iklankoran" required 
                                     class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition">
                                 <option value="" disabled selected>Pilih Kategori Iklan...</option>
-                                @foreach($iklanonline as $io)
-                                    <option value="{{ $io->id }}">{{ $io->jenis_iklanonline }}</option>
+                                @foreach($iklankoran as $ik)
+                                    <option value="{{ $ik->id }}">{{ $ik->jenis_iklankoran }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Portal Media Kabar Priangan</label>
-                            <select name="portal_iklanonline" required 
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Halaman Penempatan</label>
+                            <select name="halaman_iklan" required 
                                     class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition">
-                                <option value="Kabar Tasikmalaya">Kabar Tasikmalaya</option>
-                                <option value="Kabar Singaparna">Kabar Singaparna</option>
-                                <option value="Kabar Ciamis">Kabar Ciamis</option>
-                                <option value="Kabar Banjar">Kabar Banjar</option>
-                                <option value="Kabar Pangandaran">Kabar Pangandaran</option>
-                                <option value="Kabar Garut">Kabar Garut</option>
-                                <option value="Kabar Bandung">Kabar Bandung</option>
-                                <option value="Kabar Sumedang">Kabar Sumedang</option>
+                                <option value="Halaman Dalam">Halaman Dalam</option>
+                                <option value="Halaman 1 (Cover)">Halaman 1 (Cover Depan)</option>
+                                <option value="Halaman Belakang">Halaman Belakang</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Tanggal Mulai Tayang</label>
-                            <input type="date" name="tanggal_muatiklanonline" value="{{ date('Y-m-d') }}" required 
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Pilihan Warna</label>
+                            <select name="warna_iklan" required 
+                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition">
+                                <option value="Hitam Putih (BW)">Hitam Putih (BW)</option>
+                                <option value="Full Color (FC)">Full Color (FC)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Ukuran Iklan</label>
+                            <input type="text" name="ukuran_iklan" placeholder="Contoh: 2 x 100 mmk, 4 Baris" 
+                                   class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Tanggal Terbit</label>
+                            <input type="date" name="tanggal_muatkoran" value="{{ date('Y-m-d') }}" required 
                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Jumlah Tayang (Qty)</label>
-                            <input type="number" id="in_qty" name="total_muatiklanonline" value="1" min="1" required oninput="hitungSemua()" 
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Jumlah Edisi (Qty)</label>
+                            <input type="number" id="in_qty" name="total_muatkoran" value="1" min="1" required oninput="hitungSemua()" 
                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                         </div>
                     </div>
@@ -123,12 +134,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Harga Satuan (Rp)</label>
-                            <input type="text" id="in_harga" name="harga_transaksionline" required placeholder="0" onkeyup="formatInput(this)" 
+                            <input type="text" id="in_harga" name="harga_transaksikoran" required placeholder="0" onkeyup="formatInput(this)" 
                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-900 font-tabular focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Potongan Diskon (Rp)</label>
-                            <input type="text" id="in_diskon" name="diskon_transaksionline" value="0" onkeyup="formatInput(this)" 
+                            <input type="text" id="in_diskon" name="diskon_transaksikoran" value="0" onkeyup="formatInput(this)" 
                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-900 font-tabular focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                         </div>
                     </div>
@@ -136,7 +147,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Jumlah Dibayar / DP (Rp)</label>
-                            <input type="text" id="in_bayar" name="jumlahbayar_transaksionline" value="0" required onkeyup="formatInput(this)" 
+                            <input type="text" id="in_bayar" name="jumlahbayar_transaksikoran" value="0" required onkeyup="formatInput(this)" 
                                    class="w-full h-10 px-3.5 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-900 font-tabular focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                         </div>
                         <div>
@@ -154,7 +165,7 @@
 
                 <!-- Tombol Aksi -->
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
-                    <a href="{{ route('transaksionline.index') }}" 
+                    <a href="{{ route('transaksikoran.index') }}" 
                        class="px-5 py-2.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg transition">
                         Batal
                     </a>

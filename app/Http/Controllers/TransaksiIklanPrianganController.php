@@ -11,20 +11,30 @@ class TransaksiIklanPrianganController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // 1. Ambil Data Transaksi (Untuk Tabel)
-        // Kita gunakan with() untuk mengambil nama jenis iklan dari relasi
-        // latest() agar data terbaru muncul paling atas
-        $transaksipriangan = TransaksiPriangan::with('iklanpriangan')
-            ->latest()
-            ->paginate(10);
+        $query = TransaksiPriangan::with('iklanpriangan')->latest();
 
-        // 2. Ambil Data Master Iklan (Untuk Dropdown di Modal Edit)
-        // Tanpa ini, dropdown di modal edit akan kosong/error
+        if ($request->filled('q')) {
+            $keyword = $request->q;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('nofakturpriangan', 'like', "%{$keyword}%")
+                  ->orWhere('nama_pemasangpriangan', 'like', "%{$keyword}%")
+                  ->orWhere('sales_iklanpriangan', 'like', "%{$keyword}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'lunas') {
+                $query->where('piutang_transaksipriangan', '<=', 0);
+            } elseif ($request->status === 'piutang') {
+                $query->where('piutang_transaksipriangan', '>', 0);
+            }
+        }
+
+        $transaksipriangan = $query->paginate(10)->withQueryString();
         $iklanpriangan = IklanPriangan::all();
 
-        // 3. Kirim ke View
         return view('page.transaksipriangan.index', compact('transaksipriangan', 'iklanpriangan'));
     }
 

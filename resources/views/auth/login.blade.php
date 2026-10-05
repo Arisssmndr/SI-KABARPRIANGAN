@@ -1,34 +1,33 @@
 <x-guest-layout>
-    <div class="bg-white border border-kp-border rounded-2xl shadow-sm p-8 sm:p-10">
-        <!-- Logo & Identitas Perusahaan Masuk ke Dalam Form -->
-        <div class="text-center mb-8">
-            <div class="flex justify-center mb-4">
-                <img src="{{ asset('images/kabarpriangan.png') }}" 
-                     alt="Logo Kabar Priangan" 
-                     class="h-20 w-auto object-contain drop-shadow-sm" 
-                     onerror="this.src='{{ asset('logo.png') }}'">
-            </div>
-            <h1 class="text-2xl font-bold text-kp-text tracking-tight">
-                SIKAPRI
-            </h1>
-            <p class="text-xs font-semibold text-kp-blue-600 uppercase tracking-wider mt-1">
-                Sistem Kasir Iklan Kabar Priangan
+    <div class="bg-white border border-slate-200/90 rounded-2xl shadow-xl p-8 sm:p-9">
+        <!-- Logo Perusahaan di Dalam Form -->
+        <div class="flex justify-center mb-3">
+            <img src="{{ asset('images/kabarpriangan.png') }}" 
+                 alt="Logo Kabar Priangan" 
+                 class="h-14 w-auto object-contain" 
+                 onerror="this.src='{{ asset('logo.png') }}'">
+        </div>
+
+        <!-- Teks Asli 1 Kalimat Sesuai Permintaan (Tanpa SIKAPRI / Teks Tambahan) -->
+        <div class="text-center mb-6">
+            <p class="text-[16px] font-semibold text-slate-800">
+                Login to your Account
             </p>
-            <p class="text-sm text-kp-muted mt-2">
-                Silakan masuk dengan akun kasir Anda
-            </p>
+            <span class="text-xs text-slate-400 block mt-1">
+                Get started with our app, just start section and enjoy experience.
+            </span>
         </div>
 
         <!-- Status Sesi -->
-        <x-auth-session-status class="mb-4 text-sm text-green-700 bg-green-50 p-3 rounded-lg border border-green-200" :status="session('status')" />
+        <x-auth-session-status class="mb-4 text-xs text-green-700 bg-green-50 p-2.5 rounded-lg border border-green-200" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login') }}" class="space-y-5">
+        <form method="POST" action="{{ route('login') }}" class="space-y-4">
             @csrf
 
             <!-- Email -->
-            <div>
-                <label for="email" class="block text-sm font-semibold text-kp-text mb-1.5">
-                    Alamat Email
+            <div class="space-y-1">
+                <label for="email" class="block text-xs font-semibold text-slate-600">
+                    Email
                 </label>
                 <input id="email" 
                        type="email" 
@@ -37,54 +36,44 @@
                        required 
                        autofocus 
                        autocomplete="username"
-                       placeholder="nama@kabarpriangan.com"
-                       class="w-full px-4 py-2.5 bg-white border border-kp-border rounded-xl text-sm text-kp-text placeholder-gray-400 focus:outline-none focus:border-kp-blue-600 focus:ring-2 focus:ring-kp-blue-100 transition" />
-                <x-input-error :messages="$errors->get('email')" class="mt-1.5 text-xs text-red-600" />
+                       placeholder="Masukkan Email Anda"
+                       class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-kp-blue-600 focus:ring-2 focus:ring-kp-blue-100 transition" />
+                <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-red-600" />
             </div>
 
             <!-- Password -->
-            <div>
-                <label for="password" class="block text-sm font-semibold text-kp-text mb-1.5">
-                    Kata Sandi
+            <div class="space-y-1">
+                <label for="password" class="block text-xs font-semibold text-slate-600">
+                    Password
                 </label>
                 <input id="password" 
                        type="password" 
                        name="password" 
                        required 
                        autocomplete="current-password"
-                       placeholder="Masukkan kata sandi"
-                       class="w-full px-4 py-2.5 bg-white border border-kp-border rounded-xl text-sm text-kp-text placeholder-gray-400 focus:outline-none focus:border-kp-blue-600 focus:ring-2 focus:ring-kp-blue-100 transition" />
-                <x-input-error :messages="$errors->get('password')" class="mt-1.5 text-xs text-red-600" />
+                       placeholder="Masukkan Password"
+                       class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-kp-blue-600 focus:ring-2 focus:ring-kp-blue-100 transition" />
+                <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-red-600" />
             </div>
 
             <!-- Remember Me -->
-            <div class="flex items-center">
+            <div class="flex items-center pt-1">
                 <input id="remember_me" 
                        type="checkbox" 
                        name="remember" 
-                       class="w-4 h-4 text-kp-blue-600 border-gray-300 rounded focus:ring-kp-blue-500" />
-                <label for="remember_me" class="ms-2 text-sm text-kp-muted select-none cursor-pointer">
-                    Ingat saya di perangkat ini
+                       class="w-4 h-4 text-kp-blue-600 border-slate-300 rounded focus:ring-kp-blue-500" />
+                <label for="remember_me" class="ms-2 text-xs text-slate-600 select-none cursor-pointer">
+                    Ingat saya
                 </label>
             </div>
 
-            <!-- Tombol Masuk -->
+            <!-- Tombol Login -->
             <div class="pt-2">
                 <button type="submit" 
-                        class="w-full py-3 px-4 bg-kp-blue-600 hover:bg-kp-blue-700 active:bg-kp-blue-800 text-white font-semibold text-sm rounded-xl shadow-sm transition duration-150 focus:outline-none focus:ring-2 focus:ring-kp-blue-400 focus:ring-offset-2">
-                    Masuk ke Sistem
+                        class="w-full py-2.5 px-4 bg-kp-blue-600 hover:bg-kp-blue-700 active:bg-kp-blue-800 text-white font-semibold text-sm rounded-lg shadow-sm transition duration-150 focus:outline-none focus:ring-2 focus:ring-kp-blue-400 focus:ring-offset-2">
+                    Login
                 </button>
             </div>
         </form>
-
-        <!-- Footer Card -->
-        <div class="mt-8 pt-5 border-t border-kp-border text-center">
-            <p class="text-xs text-kp-muted">
-                &copy; {{ date('Y') }} Harian Umum Kabar Priangan
-            </p>
-            <p class="text-[11px] text-gray-400 mt-0.5">
-                Media Terpercaya Priangan Timur · Jawa Barat
-            </p>
-        </div>
     </div>
 </x-guest-layout>

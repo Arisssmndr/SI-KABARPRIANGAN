@@ -4,8 +4,8 @@
 
 @layer base {
     body {
-        background-color: #F4F8FB;
-        color: #1E293B;
+        background-color: #F8FAFC;
+        color: #111827;
         font-family: 'Plus Jakarta Sans', Figtree, system-ui, -apple-system, sans-serif;
     }
 }
@@ -14,4 +14,3 @@
 .font-tabular {
     font-variant-numeric: tabular-nums;
 }
-

@@ -1,74 +1,71 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('LAPORAN TRANSAKSI IKLAN ONLINE KABAR PRIANGAN') }}
-        </h2>
-    </x-slot>
+    <div class="max-w-3xl space-y-5">
+        <!-- Header Halaman Langsung di Konten -->
+        <div>
+            <h1 class="text-xl font-bold text-black tracking-tight">
+                Laporan Transaksi Iklan Online
+            </h1>
+            <p class="text-xs text-gray-600 mt-0.5">
+                Cetak dan rekapitulasi pembukuan iklan portal digital Kabar Priangan
+            </p>
+        </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-blue-200 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+        <div class="bg-white border border-slate-300 rounded-xl shadow-xs overflow-hidden">
+            <div class="p-5 bg-slate-50/90 border-b border-slate-200">
+                <h2 class="text-sm font-bold text-slate-900">Parameter Rekapitulasi Laporan</h2>
+                <p class="text-xs text-slate-500 mt-0.5 font-normal">Pilih rentang tanggal transaksi dan status pelunasan</p>
+            </div>
 
-                    <div class="p-4 bg-gray-100 mb-4 rounded-xl text-center font-bold">
-                        CETAK LAPORAN TRANSAKSI IKLAN KABAR PRIANGAN
+            <form method="POST" action="{{ route('laporanonline.store') }}" target="_blank" class="p-5 sm:p-6 space-y-4">
+                @csrf
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Dari Tanggal
+                        </label>
+                        <input type="date" 
+                               name="dari" 
+                               required 
+                               value="{{ date('Y-m-01') }}" 
+                               class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm text-black focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
                     </div>
 
-                    <form class="w-full mx-auto my-5" method="POST" action="{{ route('laporanonline.store') }}"
-                        target="_blank">
-                        @csrf
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-
-                            <div>
-                                <label for="dari"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dari
-                                    Tanggal</label>
-                                <input type="date" id="dari" name="dari" required
-                                    value="{{ date('Y-m-01') }}"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-                            </div>
-
-                            <div>
-                                <label for="sampai"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sampai
-                                    Tanggal</label>
-                                <input type="date" id="sampai" name="sampai" required value="{{ date('Y-m-d') }}"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-                            </div>
-
-                            <div>
-                                <label for="status"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
-                                    Pembayaran</label>
-                                <select name="status" id="status"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                    <option value="all">Semua Status</option>
-                                    <option value="Lunas">Lunas</option>
-                                    <option value="Belum Lunas">Belum Lunas</option>
-                                </select>
-                            </div>
-
-                        </div>
-
-                        <div class="flex justify-end gap-3 mt-6">
-
-                            <button type="reset"
-                                class="text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center">
-                                <i class="fi fi-sr-refresh mr-2"></i> Reset
-                            </button>
-
-                            <button type="submit"
-                                class="text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center flex items-center justify-center">
-                                <i class="fi fi-sr-print mr-2"></i> Cetak Laporan
-                            </button>
-
-                        </div>
-
-                    </form>
-
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Sampai Tanggal
+                        </label>
+                        <input type="date" 
+                               name="sampai" 
+                               required 
+                               value="{{ date('Y-m-d') }}" 
+                               class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm text-black focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition" />
+                    </div>
                 </div>
-            </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Status Pembayaran
+                    </label>
+                    <select name="status" 
+                            class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm text-black focus:outline-none focus:border-kp-blue-600 focus:ring-1 focus:ring-kp-blue-600 transition">
+                        <option value="all">Semua Status (Lunas & Belum Lunas)</option>
+                        <option value="Lunas">Hanya yang Sudah Lunas</option>
+                        <option value="Belum Lunas">Hanya yang Belum Lunas (Masih Ada Piutang)</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+                    <button type="reset" 
+                            class="px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 border border-slate-300 rounded-lg transition cursor-pointer">
+                        Reset
+                    </button>
+                    <button type="submit" 
+                            class="px-5 py-2.5 bg-kp-blue-600 hover:bg-kp-blue-700 active:bg-kp-blue-800 text-white text-xs font-semibold rounded-lg shadow-sm transition cursor-pointer">
+                        Cetak Laporan
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

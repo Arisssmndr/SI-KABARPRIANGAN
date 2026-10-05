@@ -3,20 +3,20 @@
         <!-- Header Halaman Langsung di Konten -->
         <div>
             <h1 class="text-xl font-bold text-black tracking-tight">
-                Laporan Transaksi Priangan TV
+                Laporan Transaksi Iklan Koran
             </h1>
             <p class="text-xs text-gray-600 mt-0.5">
-                Cetak dan rekapitulasi pembukuan siaran iklan Priangan TV
+                Cetak dan rekapitulasi pembukuan iklan cetak Harian Umum Kabar Priangan
             </p>
         </div>
 
         <div class="bg-white border border-slate-300 rounded-xl shadow-xs overflow-hidden">
             <div class="p-5 bg-slate-50/90 border-b border-slate-200">
                 <h2 class="text-sm font-bold text-slate-900">Parameter Rekapitulasi Laporan</h2>
-                <p class="text-xs text-slate-500 mt-0.5 font-normal">Pilih rentang tanggal transaksi siaran dan status pelunasan</p>
+                <p class="text-xs text-slate-500 mt-0.5 font-normal">Pilih rentang tanggal transaksi dan status pelunasan</p>
             </div>
 
-            <form method="POST" action="{{ route('laporanpriangan.store') }}" target="_blank" class="p-5 sm:p-6 space-y-4">
+            <form method="POST" action="{{ route('laporankoran.store') }}" target="_blank" class="p-5 sm:p-6 space-y-4">
                 @csrf
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

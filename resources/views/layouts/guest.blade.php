@@ -58,8 +58,8 @@
 
 </head>
 
-<body class="font-sans antialiased bg-kp-canvas text-kp-text min-h-screen flex items-center justify-center p-4 sm:p-6">
-    <div class="w-full max-w-md">
+<body class="font-sans antialiased bg-slate-100 text-slate-800 min-h-screen flex items-center justify-center p-4 sm:p-6">
+    <div class="w-full max-w-sm">
         {{ $slot }}
     </div>
 </body>

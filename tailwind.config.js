@@ -25,19 +25,19 @@ export default {
                     800: '#094E75',
                     900: '#0C4262',
                 },
-                // 30% Clean Newspaper Surface (No dark black)
-                'kp-canvas': '#F4F8FB', // Light clean paper canvas
+                // 30% Clean Newspaper Surface (No dark black backgrounds)
+                'kp-canvas': '#F8FAFC', // Crisp clean paper canvas
                 'kp-surface': '#FFFFFF', // Crisp white paper cards & tables
                 'kp-border': '#E2E8F0',  // Subtle sheet hairline divider
-                'kp-text': '#1E293B',    // Deep slate editorial text (not pitch black)
-                'kp-muted': '#64748B',   // Secondary editorial text
-                
-                // 10% Print Amber Accent (Calls to action, highlight)
+                'kp-text': '#111827',    // High contrast black text (crisp readability)
+                'kp-muted': '#4B5563',   // High contrast charcoal text
+
+                // 10% Action Accent (Brand Blue unified, no random orange)
                 'kp-accent': {
-                    DEFAULT: '#D97706',
-                    hover: '#B45309',
-                    light: '#FEF3C7',
-                    text: '#92400E',
+                    DEFAULT: '#0A72AC',
+                    hover: '#085C8D',
+                    light: '#DDEEFA',
+                    text: '#0A72AC',
                 },
             },
             fontFamily: {
