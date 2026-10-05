@@ -1,198 +1,126 @@
-<nav x-data="{ open: false }" class="bg-blue-100 border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
+<!-- Sidebar Navigasi Kabar Priangan (60% Warna Brand Biru, Bebas Icon, Bersih & Modern) -->
+<aside class="w-64 bg-kp-blue-600 text-white flex flex-col shrink-0 min-h-screen border-r border-kp-blue-700 select-none">
+    <!-- Header Logo & Identitas Perusahaan -->
+    <div class="p-5 border-b border-kp-blue-700/60 flex items-center gap-3 bg-kp-blue-700/30">
+        <img src="{{ asset('images/kabarpriangan.png') }}" 
+             alt="Logo Kabar Priangan" 
+             class="h-10 w-10 object-contain rounded-full bg-white p-0.5 shadow-sm"
+             onerror="this.src='{{ asset('logo.png') }}'">
+        <div class="leading-tight">
+            <h1 class="font-extrabold text-base tracking-wide text-white">
+                KABAR PRIANGAN
+            </h1>
+            <p class="text-[11px] font-medium text-kp-blue-100 tracking-wider uppercase">
+                Sistem Kasir Iklan
+            </p>
+        </div>
+    </div>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-                <div class="hidden sm:flex sm:items-center gap-2 sm:ms-6">
-                    @can('role=Administrator')
-                    <li class="relative list-none">
-                        <x-dropdown>
-                            <x-slot name="trigger">
-                                <button
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-blue-100 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                    <div>Tabel Data Iklan</div>
-
-                                    <div class="ms-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-
-                            <x-slot name="content">
-
-                                <x-dropdown-link :href="route('iklanonline.index')">
-                                    {{ __('Iklan Online') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('iklanpriangan.index')">
-                                    {{ __('Iklan Priangan Tv') }}
-                                </x-dropdown-link>
-                            </x-slot>
-                        </x-dropdown>
-                    </li>
-                    @endcan
-                    <li class="relative list-none">
-                        <x-dropdown>
-                            <x-slot name="trigger">
-                                <button
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-blue-100 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                    <div>Transaksi</div>
-
-                                    <div class="ms-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('transaksionline.index')">
-                                    {{ __('Iklan Online') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('transaksipriangan.index')">
-                                    {{ __('Iklan Priangan Tv') }}
-                                </x-dropdown-link>
-                            </x-slot>
-                        </x-dropdown>
-                    </li>
-                    <li class="relative list-none">
-                        <x-dropdown>
-                            <x-slot name="trigger">
-                                <button
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-blue-100 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                    <div>Laporan</div>
-
-                                    <div class="ms-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('laporanonline.index')">
-                                    {{ __('Laporan Iklan Online') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('laporanpriangan.index')">
-                                    {{ __('Laporan Iklan Priangan Tv') }}
-                                </x-dropdown-link>
-                            </x-slot>
-                        </x-dropdown>
-                    </li>
-                </div>
-
+    <!-- Menu Links Navigation -->
+    <nav class="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
+        <!-- Section: Menu Utama -->
+        <div>
+            <p class="px-3 mb-2 text-[10px] font-bold text-kp-blue-200 uppercase tracking-widest">
+                Menu Utama
+            </p>
+            <div class="space-y-1">
+                <a href="{{ route('dashboard') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('dashboard') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Dashboard
+                </a>
             </div>
+        </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button
-                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-blue-100 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
+        <!-- Section: Transaksi Iklan -->
+        <div>
+            <p class="px-3 mb-2 text-[10px] font-bold text-kp-blue-200 uppercase tracking-widest">
+                Transaksi Iklan
+            </p>
+            <div class="space-y-1">
+                <a href="{{ route('transaksikoran.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('transaksikoran.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Iklan Koran
+                </a>
+                <a href="{{ route('transaksionline.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('transaksionline.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Iklan Online
+                </a>
+                <a href="{{ route('transaksipriangan.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('transaksipriangan.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Iklan Priangan TV
+                </a>
             </div>
+        </div>
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+        <!-- Section: Laporan Keuangan -->
+        <div>
+            <p class="px-3 mb-2 text-[10px] font-bold text-kp-blue-200 uppercase tracking-widest">
+                Laporan Keuangan
+            </p>
+            <div class="space-y-1">
+                <a href="{{ route('laporankoran.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('laporankoran.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Laporan Koran
+                </a>
+                <a href="{{ route('laporanonline.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('laporanonline.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Laporan Online
+                </a>
+                <a href="{{ route('laporanpriangan.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('laporanpriangan.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Laporan Priangan TV
+                </a>
+            </div>
+        </div>
+
+        <!-- Section: Master Data Iklan -->
+        @can('role=Administrator')
+        <div>
+            <p class="px-3 mb-2 text-[10px] font-bold text-kp-blue-200 uppercase tracking-widest">
+                Master Data Iklan
+            </p>
+            <div class="space-y-1">
+                <a href="{{ route('iklankoran.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('iklankoran.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Data Iklan Koran
+                </a>
+                <a href="{{ route('iklanonline.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('iklanonline.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Data Iklan Online
+                </a>
+                <a href="{{ route('iklanpriangan.index') }}" 
+                   class="flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition duration-150 {{ request()->routeIs('iklanpriangan.*') ? 'bg-white text-kp-blue-700 shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                    <span class="mr-2 font-bold">•</span> Data Iklan Priangan TV
+                </a>
+            </div>
+        </div>
+        @endcan
+    </nav>
+
+    <!-- User Profile & Action Bar di Bagian Bawah Sidebar -->
+    <div class="p-4 border-t border-kp-blue-700/60 bg-kp-blue-700/40">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <p class="text-sm font-bold text-white truncate max-w-[150px]">
+                    {{ Auth::user()->name }}
+                </p>
+                <span class="inline-block mt-0.5 px-2 py-0.5 text-[10px] font-semibold bg-white/20 text-white rounded">
+                    {{ Auth::user()->role ?? 'Kasir' }}
+                </span>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 pt-2 border-t border-white/10 text-xs">
+            <a href="{{ route('profile.edit') }}" 
+               class="flex-1 text-center py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition">
+                Profil
+            </a>
+            <form method="POST" action="{{ route('logout') }}" class="flex-1">
+                @csrf
+                <button type="submit" 
+                        class="w-full text-center py-1.5 px-2 rounded-lg bg-red-500/80 hover:bg-red-600 text-white font-semibold transition">
+                    Keluar
                 </button>
-            </div>
+            </form>
         </div>
     </div>
-
-    <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
+</aside>

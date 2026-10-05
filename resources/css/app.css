@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        background-color: #F4F8FB;
+        color: #1E293B;
+        font-family: 'Plus Jakarta Sans', Figtree, system-ui, -apple-system, sans-serif;
+    }
+}
+
+/* Format angka keuangan agar sejajar vertikal saat ditampilkan dalam tabel */
+.font-tabular {
+    font-variant-numeric: tabular-nums;
+}
+
