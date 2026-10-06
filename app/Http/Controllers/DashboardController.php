@@ -33,7 +33,7 @@ class DashboardController extends Controller
 
         // 3. Data Iklan TV (Priangan TV)
         $omzetTv = TransaksiPriangan::whereBetween('tanggal_transaksipriangan', [$startOfMonth, $endOfMonth])
-            ->sum('harga_transaksipriangan');
+            ->sum('totaltagihan_transaksipriangan');
         $piutangTv = TransaksiPriangan::sum('piutang_transaksipriangan');
         $countTv = TransaksiPriangan::count();
         $todayTv = TransaksiPriangan::whereDate('tanggal_transaksipriangan', $today)->count();

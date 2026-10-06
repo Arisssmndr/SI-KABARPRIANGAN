@@ -146,7 +146,11 @@
                                                 data-sales="{{ $t->sales_iklanpriangan }}"
                                                 data-tgl_muat="{{ $t->tanggal_muatiklanpriangan }}"
                                                 data-harga="{{ $t->harga_transaksipriangan }}"
+                                                data-diskon="{{ $t->diskon_transaksipriangan ?? 0 }}"
                                                 data-bayar="{{ $t->jumlahbayar_transaksipriangan }}"
+                                                data-qty="{{ $t->total_muatiklanpriangan ?? 1 }}"
+                                                data-komisi="{{ $t->komisi_transaksipriangan ?? 0 }}"
+                                                data-insentif="{{ $t->insentif_transaksipriangan ?? 0 }}"
                                                 class="px-2.5 py-1 text-xs font-medium text-kp-blue-700 bg-kp-blue-50 hover:bg-kp-blue-100 rounded-md border border-kp-blue-200 transition cursor-pointer">
                                             Ubah
                                         </button>
@@ -238,10 +242,14 @@
 
                 <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-3">
                     <p class="text-xs font-semibold text-black uppercase tracking-wider">Perhitungan Biaya</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="block text-xs font-medium text-gray-700 mb-1">Harga Iklan (Rp)</label>
                             <input type="text" id="e_harga" name="harga_transaksipriangan" required onkeyup="formatInput(this)" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-medium text-black font-tabular" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Diskon (Rp)</label>
+                            <input type="text" id="e_diskon" name="diskon_transaksipriangan" value="0" onkeyup="formatInput(this)" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-medium text-black font-tabular" />
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-700 mb-1">Jumlah Dibayar (Rp)</label>
@@ -249,8 +257,12 @@
                         </div>
                     </div>
                     <div class="pt-2 text-xs border-t border-slate-200 flex justify-between items-center">
+                        <span class="text-gray-600">Total Tagihan:</span>
+                        <p id="e_label_total" class="font-bold text-kp-blue-700 text-sm font-tabular">Rp 0</p>
+                    </div>
+                    <div class="text-xs flex justify-between items-center">
                         <span class="text-gray-600">Sisa Piutang:</span>
-                        <p id="e_label_piutang" class="font-semibold text-red-600 text-sm font-tabular">Rp 0</p>
+                        <p id="e_label_piutang" class="font-bold text-red-600 text-sm font-tabular">Rp 0</p>
                     </div>
                 </div>
 
@@ -296,6 +308,7 @@
             document.getElementById('e_tgl_muat').value = d.tgl_muat;
 
             document.getElementById('e_harga').value = formatRupiah(d.harga);
+            document.getElementById('e_diskon').value = formatRupiah(d.diskon || 0);
             document.getElementById('e_bayar').value = formatRupiah(d.bayar);
 
             hitungEdit();
@@ -308,22 +321,42 @@
 
         function hitungEdit() {
             const harga = cleanNumber(document.getElementById('e_harga').value);
+            const diskon = cleanNumber(document.getElementById('e_diskon').value);
             const bayar = cleanNumber(document.getElementById('e_bayar').value);
-            const piutang = Math.max(0, harga - bayar);
+            const total = Math.max(0, harga - diskon);
+            const piutang = Math.max(0, total - bayar);
 
+            document.getElementById('e_label_total').innerText = 'Rp ' + formatRupiah(total);
             document.getElementById('e_label_piutang').innerText = 'Rp ' + formatRupiah(piutang);
+            if (piutang > 0) {
+                document.getElementById('e_label_piutang').className = 'font-bold text-red-600 text-sm font-tabular';
+            } else {
+                document.getElementById('e_label_piutang').className = 'font-bold text-emerald-600 text-sm font-tabular';
+            }
         }
 
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const nofaktur = document.getElementById('e_nofaktur').value;
+            AppAlert.confirmSave({
+                title: 'Simpan Perubahan',
+                subtitle: 'Data transaksi akan diperbarui',
+                target: nofaktur,
+                confirmText: 'Ya, Simpan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
         async function deleteTransaksi(id, nofaktur) {
-            Swal.fire({
-                title: 'Hapus Transaksi?',
-                text: 'Faktur ' + nofaktur + ' akan dihapus permanen dari sistem.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batal'
+            AppAlert.confirmDelete({
+                title: 'Hapus Transaksi',
+                subtitle: 'Tindakan ini tidak dapat dibatalkan',
+                target: nofaktur,
+                confirmText: 'Ya, Hapus Transaksi'
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
@@ -332,10 +365,18 @@
                             _method: 'DELETE',
                             _token: token
                         });
-                        Swal.fire('Terhapus', 'Transaksi berhasil dihapus.', 'success')
-                            .then(() => location.reload());
+                        AppAlert.success({
+                            title: 'Berhasil Dihapus',
+                            subtitle: 'Data telah dihapus dari sistem',
+                            message: 'Transaksi ' + nofaktur + ' berhasil dihapus.'
+                        }).then(() => location.reload());
                     } catch (err) {
-                        Swal.fire('Gagal', 'Terjadi kesalahan saat menghapus data.', 'error');
+                        AppAlert.error({
+                            title: 'Gagal Menghapus',
+                            subtitle: 'Terjadi kesalahan sistem',
+                            message: 'Terjadi kesalahan saat menghapus data transaksi.',
+                            buttonText: 'Tutup'
+                        });
                     }
                 }
             });

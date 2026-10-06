@@ -17,7 +17,13 @@ class TransaksiPriangan extends Model
         'id_iklanpriangan',
         'sales_iklanpriangan',
         'tanggal_muatiklanpriangan',
+        'total_muatiklanpriangan',
         'harga_transaksipriangan',
+        'diskon_transaksipriangan',
+        'insentif_transaksipriangan',
+        'komisi_transaksipriangan',
+        'ppn_transaksipriangan',
+        'totaltagihan_transaksipriangan',
         'jumlahbayar_transaksipriangan',
         'piutang_transaksipriangan',
     ];

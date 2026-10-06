@@ -62,6 +62,9 @@
     <div class="w-full max-w-sm">
         {{ $slot }}
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @include('partials.alert-scripts')
 </body>
 
 </html>

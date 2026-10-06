@@ -156,6 +156,8 @@
                                                 data-harga="{{ $t->harga_transaksikoran }}"
                                                 data-diskon="{{ $t->diskon_transaksikoran }}"
                                                 data-bayar="{{ $t->jumlahbayar_transaksikoran }}"
+                                                data-komisi="{{ $t->komisi_transaksikoran }}"
+                                                data-insentif="{{ $t->insentif_transaksikoran }}"
                                                 class="px-2.5 py-1 text-xs font-medium text-kp-blue-700 bg-kp-blue-50 hover:bg-kp-blue-100 rounded-md border border-kp-blue-200 transition cursor-pointer">
                                             Ubah
                                         </button>
@@ -287,9 +289,27 @@
                             <input type="text" id="e_bayar" name="jumlahbayar_transaksikoran" required onkeyup="formatInput(this)" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-medium text-black font-tabular" />
                         </div>
                     </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs border-t border-slate-200">
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">DPP (Nilai / 1.11)</label>
+                            <input type="text" id="e_dpp" readonly class="w-full px-2.5 py-1.5 bg-gray-100 border border-slate-300 rounded-md text-xs font-medium text-gray-700 font-tabular cursor-not-allowed" />
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">PPN (11%)</label>
+                            <input type="text" id="e_ppn" readonly class="w-full px-2.5 py-1.5 bg-gray-100 border border-slate-300 rounded-md text-xs font-medium text-gray-700 font-tabular cursor-not-allowed" />
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Komisi (Rp)</label>
+                            <input type="text" id="e_komisi" name="komisi_transaksikoran" onkeyup="formatInput(this)" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-md text-xs font-medium text-black font-tabular" />
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-600 mb-1">Insentif (Rp)</label>
+                            <input type="text" id="e_insentif" name="insentif_transaksikoran" onkeyup="formatInput(this)" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-md text-xs font-medium text-black font-tabular" />
+                        </div>
+                    </div>
                     <div class="grid grid-cols-2 gap-3 pt-2 text-xs border-t border-slate-200">
                         <div>
-                            <span class="text-gray-600">Total Tagihan (termasuk PPN 11%):</span>
+                            <span class="text-gray-600">Total Tagihan:</span>
                             <p id="e_label_total" class="font-semibold text-kp-blue-700 text-sm font-tabular">Rp 0</p>
                         </div>
                         <div>
@@ -347,6 +367,8 @@
             document.getElementById('e_harga').value = formatRupiah(d.harga);
             document.getElementById('e_diskon').value = formatRupiah(d.diskon);
             document.getElementById('e_bayar').value = formatRupiah(d.bayar);
+            document.getElementById('e_komisi').value = formatRupiah(d.komisi || 0);
+            document.getElementById('e_insentif').value = formatRupiah(d.insentif || 0);
 
             hitungEdit();
             document.getElementById('editModal').classList.remove('hidden');
@@ -363,25 +385,52 @@
             const qty = parseFloat(document.getElementById('e_total_muat').value) || 1;
 
             const omset = harga * qty;
-            const subtotal = Math.max(0, omset - diskon);
-            const ppn = Math.round(subtotal * 0.11);
-            const total = subtotal + ppn;
+            let total = omset - diskon;
+            if (total < 0) total = 0;
+
+            const dpp = total / 1.11;
+            const ppn = total - dpp;
             const piutang = Math.max(0, total - bayar);
 
-            document.getElementById('e_label_total').innerText = 'Rp ' + formatRupiah(total);
-            document.getElementById('e_label_piutang').innerText = 'Rp ' + formatRupiah(piutang);
+            if (document.getElementById('e_dpp')) {
+                document.getElementById('e_dpp').value = formatRupiah(Math.round(dpp));
+            }
+            if (document.getElementById('e_ppn')) {
+                document.getElementById('e_ppn').value = formatRupiah(Math.round(ppn));
+            }
+
+            document.getElementById('e_label_total').innerText = 'Rp ' + formatRupiah(Math.round(total));
+            const elPiutang = document.getElementById('e_label_piutang');
+            elPiutang.innerText = 'Rp ' + formatRupiah(Math.round(piutang));
+            if (piutang > 0) {
+                elPiutang.className = 'font-semibold text-red-600 text-sm font-tabular';
+            } else {
+                elPiutang.className = 'font-semibold text-emerald-600 text-sm font-tabular';
+            }
         }
 
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const nofaktur = document.getElementById('e_nofaktur').value;
+            AppAlert.confirmSave({
+                title: 'Simpan Perubahan',
+                subtitle: 'Data transaksi akan diperbarui',
+                target: nofaktur,
+                confirmText: 'Ya, Simpan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
         async function deleteTransaksi(id, nofaktur) {
-            Swal.fire({
-                title: 'Hapus Transaksi?',
-                text: 'Faktur ' + nofaktur + ' akan dihapus permanen dari sistem.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batal'
+            AppAlert.confirmDelete({
+                title: 'Hapus Transaksi',
+                subtitle: 'Tindakan ini tidak dapat dibatalkan',
+                target: nofaktur,
+                confirmText: 'Ya, Hapus Transaksi'
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
@@ -390,10 +439,18 @@
                             _method: 'DELETE',
                             _token: token
                         });
-                        Swal.fire('Terhapus', 'Transaksi berhasil dihapus.', 'success')
-                            .then(() => location.reload());
+                        AppAlert.success({
+                            title: 'Berhasil Dihapus',
+                            subtitle: 'Data telah dihapus dari sistem',
+                            message: 'Transaksi ' + nofaktur + ' berhasil dihapus.'
+                        }).then(() => location.reload());
                     } catch (err) {
-                        Swal.fire('Gagal', 'Terjadi kesalahan saat menghapus data.', 'error');
+                        AppAlert.error({
+                            title: 'Gagal Menghapus',
+                            subtitle: 'Terjadi kesalahan sistem',
+                            message: 'Terjadi kesalahan saat menghapus data transaksi.',
+                            buttonText: 'Tutup'
+                        });
                     }
                 }
             });

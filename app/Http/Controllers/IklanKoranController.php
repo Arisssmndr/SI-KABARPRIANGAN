@@ -61,6 +61,14 @@ class IklanKoranController extends Controller
     public function destroy($id)
     {
         $iklan = IklanKoran::findOrFail($id);
+
+        if ($iklan->transaksikoran()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Jenis iklan ini tidak dapat dihapus karena masih digunakan dalam data transaksi koran.'
+            ], 422);
+        }
+
         $iklan->delete();
 
         return response()->json(['status' => 'success']);

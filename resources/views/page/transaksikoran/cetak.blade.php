@@ -213,7 +213,7 @@
                 </tr>
                 <tr>
                     <td>Dasar Pengenaan Pajak (DPP):</td>
-                    <td style="text-align: right;">Rp {{ number_format(max(0, ($transaksi->harga_transaksikoran * $transaksi->total_muatkoran) - $transaksi->diskon_transaksikoran), 0, ',', '.') }}</td>
+                    <td style="text-align: right;">Rp {{ number_format(max(0, $transaksi->totaltagihan_transaksikoran - $transaksi->ppn_transaksikoran), 0, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>PPN (11%):</td>

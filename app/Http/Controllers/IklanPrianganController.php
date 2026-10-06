@@ -75,14 +75,17 @@ class IklanPrianganController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = [
-            'kode_iklanpriangan' => $request->input('kode_iklanpriangan'),
+        $request->validate([
+            'jenis_iklanpriangan' => 'required|string|max:255',
+        ]);
+
+        $item = IklanPriangan::findOrFail($id);
+        $item->update([
             'jenis_iklanpriangan' => $request->input('jenis_iklanpriangan'),
-        ];
-        $datas = IklanPriangan::findOrFail($id);
-        $datas->update($data);
+        ]);
+
         return redirect()->route('iklanpriangan.index')
-            ->with('success', 'Data Iklan Online Berhasil Di Update!');
+            ->with('success', 'Data Jenis Iklan Priangan TV Berhasil Diperbarui!');
     }
 
     /**
@@ -91,7 +94,16 @@ class IklanPrianganController extends Controller
     public function destroy(string $id)
     {
         $data = IklanPriangan::findOrFail($id);
+
+        if ($data->transaksipriangan()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Jenis iklan ini tidak dapat dihapus karena masih digunakan dalam data transaksi TV.'
+            ], 422);
+        }
+
         $data->delete();
-        return back()->with('message_delete', 'Data Iklan Sudah dihapus');
+
+        return response()->json(['status' => 'success']);
     }
 }

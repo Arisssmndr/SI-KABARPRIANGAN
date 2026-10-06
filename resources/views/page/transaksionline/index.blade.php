@@ -363,16 +363,28 @@
             document.getElementById('e_label_piutang').innerText = 'Rp ' + formatRupiah(piutang);
         }
 
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const nofaktur = document.getElementById('e_nofaktur').value;
+            AppAlert.confirmSave({
+                title: 'Simpan Perubahan',
+                subtitle: 'Data transaksi akan diperbarui',
+                target: nofaktur,
+                confirmText: 'Ya, Simpan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
         async function deleteTransaksi(id, nofaktur) {
-            Swal.fire({
-                title: 'Hapus Transaksi?',
-                text: 'Faktur ' + nofaktur + ' akan dihapus permanen dari sistem.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batal'
+            AppAlert.confirmDelete({
+                title: 'Hapus Transaksi',
+                subtitle: 'Tindakan ini tidak dapat dibatalkan',
+                target: nofaktur,
+                confirmText: 'Ya, Hapus Transaksi'
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
@@ -381,10 +393,18 @@
                             _method: 'DELETE',
                             _token: token
                         });
-                        Swal.fire('Terhapus', 'Transaksi berhasil dihapus.', 'success')
-                            .then(() => location.reload());
+                        AppAlert.success({
+                            title: 'Berhasil Dihapus',
+                            subtitle: 'Data telah dihapus dari sistem',
+                            message: 'Transaksi ' + nofaktur + ' berhasil dihapus.'
+                        }).then(() => location.reload());
                     } catch (err) {
-                        Swal.fire('Gagal', 'Terjadi kesalahan saat menghapus data.', 'error');
+                        AppAlert.error({
+                            title: 'Gagal Menghapus',
+                            subtitle: 'Terjadi kesalahan sistem',
+                            message: 'Terjadi kesalahan saat menghapus data transaksi.',
+                            buttonText: 'Tutup'
+                        });
                     }
                 }
             });

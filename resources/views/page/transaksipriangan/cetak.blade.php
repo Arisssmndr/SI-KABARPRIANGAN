@@ -315,7 +315,7 @@
 
         <!-- Tanggal diletakkan di sebelah kiri -->
         <div class="footer-date">
-            Tasikmalaya, 1 September 2026
+            Tasikmalaya, {{ \Carbon\Carbon::parse($transaksi->tanggal_transaksipriangan)->translatedFormat('d F Y') }}
         </div>
 
         <!-- Bagian 3 Kolom Tanda Tangan -->

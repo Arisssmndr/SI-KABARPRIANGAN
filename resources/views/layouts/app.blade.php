@@ -165,9 +165,10 @@
                         </div>
 
                         <div class="py-1">
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" id="logoutForm">
                                 @csrf
-                                <button type="submit" 
+                                <button type="button" 
+                                        onclick="confirmLogout()"
                                         class="w-full text-left px-3.5 py-2 text-xs text-rose-600 hover:bg-rose-50 transition font-medium cursor-pointer">
                                     Keluar
                                 </button>
@@ -205,31 +206,26 @@
             }
         });
     </script>
+    @include('partials.alert-scripts')
     @stack('scripts')
 
-    <!-- SweetAlert Notifikasi -->
+    <!-- SweetAlert Notifikasi Flash Sesi -->
     <script>
         @if (session('success'))
-            Swal.fire({
-                icon: 'success',
+            AppAlert.success({
                 title: 'Berhasil',
-                text: '{{ session('success') }}',
-                timer: 2000,
-                timerProgressBar: true,
-                confirmButtonColor: '#0A72AC',
-                showConfirmButton: false,
+                subtitle: 'Data telah diperbarui',
+                message: '{{ session('success') }}',
+                timer: 2200
             });
         @endif
 
         @if (session('error'))
-            Swal.fire({
-                icon: 'error',
+            AppAlert.error({
                 title: 'Terjadi Kesalahan',
-                text: '{{ session('error') }}',
-                timer: 3000,
-                timerProgressBar: true,
-                confirmButtonColor: '#0A72AC',
-                showConfirmButton: false,
+                subtitle: 'Operasi gagal diproses',
+                message: '{{ session('error') }}',
+                buttonText: 'Tutup'
             });
         @endif
     </script>

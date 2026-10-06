@@ -75,14 +75,17 @@ class IklanOnlineController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = [
-            'kode_iklanonline' => $request->input('kode_iklanonline'),
+        $request->validate([
+            'jenis_iklanonline' => 'required|string|max:255',
+        ]);
+
+        $item = IklanOnline::findOrFail($id);
+        $item->update([
             'jenis_iklanonline' => $request->input('jenis_iklanonline'),
-        ];
-        $datas = IklanOnline::findOrFail($id);
-        $datas->update($data);
+        ]);
+
         return redirect()->route('iklanonline.index')
-            ->with('success', 'Data Iklan Online Berhasil Di Update!');
+            ->with('success', 'Data Iklan Online Berhasil Diperbarui!');
     }
 
     /**
@@ -91,9 +94,16 @@ class IklanOnlineController extends Controller
     public function destroy($id)
     {
         $data = IklanOnline::findOrFail($id);
+
+        if ($data->transaksionline()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Jenis iklan ini tidak dapat dihapus karena masih digunakan dalam data transaksi online.'
+            ], 422);
+        }
+
         $data->delete();
 
-        // Kembalikan JSON (bukan redirect)
         return response()->json(['status' => 'success']);
     }
 }

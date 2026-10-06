@@ -70,21 +70,26 @@ class TransaksiKoranController extends Controller
             'harga_transaksikoran'   => 'required',
             'diskon_transaksikoran'  => 'nullable',
             'jumlahbayar_transaksikoran' => 'required',
+            'komisi_transaksikoran'  => 'nullable',
+            'insentif_transaksikoran'=> 'nullable',
         ]);
 
-        $harga_bersih  = (int) str_replace(['.', ','], '', $request->harga_transaksikoran);
-        $diskon_bersih = (int) str_replace(['.', ','], '', $request->diskon_transaksikoran ?? 0);
-        $bayar_bersih  = (int) str_replace(['.', ','], '', $request->jumlahbayar_transaksikoran);
-        $qty           = (int) $request->total_muatkoran;
+        $harga_bersih   = (int) str_replace(['.', ','], '', $request->harga_transaksikoran);
+        $diskon_bersih  = (int) str_replace(['.', ','], '', $request->diskon_transaksikoran ?? 0);
+        $bayar_bersih   = (int) str_replace(['.', ','], '', $request->jumlahbayar_transaksikoran);
+        $qty            = (int) ($request->total_muatkoran ?? 1);
 
-        $total_omset   = $harga_bersih * $qty;
-        $insentif      = (int) ($total_omset * 0.20);
-        $komisi        = (int) ($total_omset * 0.20);
+        $total_omset    = $harga_bersih * $qty;
+        $total_tagihan  = max(0, $total_omset - $diskon_bersih);
+        $dpp            = (int) round($total_tagihan / 1.11);
+        $ppn            = $total_tagihan - $dpp;
+        $piutang        = max(0, $total_tagihan - $bayar_bersih);
 
-        $subtotal      = max(0, $total_omset - $diskon_bersih);
-        $ppn           = (int) ($subtotal * 0.11);
-        $total_tagihan = $subtotal + $ppn;
-        $piutang       = max(0, $total_tagihan - $bayar_bersih);
+        $komisi_input   = $request->filled('komisi_transaksikoran') ? (int) str_replace(['.', ','], '', $request->komisi_transaksikoran) : 0;
+        $insentif_input = $request->filled('insentif_transaksikoran') ? (int) str_replace(['.', ','], '', $request->insentif_transaksikoran) : 0;
+
+        $komisi         = $komisi_input > 0 ? $komisi_input : (int) round($dpp * 0.20);
+        $insentif       = $insentif_input > 0 ? $insentif_input : (int) round($dpp * 0.20);
 
         TransaksiKoran::create([
             'nofakturkoran'          => $request->nofakturkoran,
@@ -126,26 +131,33 @@ class TransaksiKoranController extends Controller
             'id_iklankoran'          => 'required|exists:iklankoran,id',
             'halaman_iklan'          => 'required|string',
             'warna_iklan'            => 'required|string',
+            'ukuran_iklan'           => 'nullable|string',
             'tanggal_muatkoran'      => 'required|date',
             'sales_iklankoran'       => 'required|string',
             'total_muatkoran'        => 'required|numeric|min:1',
             'harga_transaksikoran'   => 'required',
             'diskon_transaksikoran'  => 'nullable',
             'jumlahbayar_transaksikoran' => 'required',
+            'komisi_transaksikoran'  => 'nullable',
+            'insentif_transaksikoran'=> 'nullable',
         ]);
 
-        $harga_bersih  = (int) str_replace(['.', ','], '', $request->harga_transaksikoran);
-        $diskon_bersih = (int) str_replace(['.', ','], '', $request->diskon_transaksikoran ?? 0);
-        $bayar_bersih  = (int) str_replace(['.', ','], '', $request->jumlahbayar_transaksikoran);
-        $qty           = (int) $request->total_muatkoran;
+        $harga_bersih   = (int) str_replace(['.', ','], '', $request->harga_transaksikoran);
+        $diskon_bersih  = (int) str_replace(['.', ','], '', $request->diskon_transaksikoran ?? 0);
+        $bayar_bersih   = (int) str_replace(['.', ','], '', $request->jumlahbayar_transaksikoran);
+        $qty            = (int) ($request->total_muatkoran ?? 1);
 
-        $total_omset   = $harga_bersih * $qty;
-        $insentif      = (int) ($total_omset * 0.20);
-        $komisi        = (int) ($total_omset * 0.20);
-        $subtotal      = max(0, $total_omset - $diskon_bersih);
-        $ppn           = (int) ($subtotal * 0.11);
-        $total_tagihan = $subtotal + $ppn;
-        $piutang       = max(0, $total_tagihan - $bayar_bersih);
+        $total_omset    = $harga_bersih * $qty;
+        $total_tagihan  = max(0, $total_omset - $diskon_bersih);
+        $dpp            = (int) round($total_tagihan / 1.11);
+        $ppn            = $total_tagihan - $dpp;
+        $piutang        = max(0, $total_tagihan - $bayar_bersih);
+
+        $komisi_input   = $request->filled('komisi_transaksikoran') ? (int) str_replace(['.', ','], '', $request->komisi_transaksikoran) : 0;
+        $insentif_input = $request->filled('insentif_transaksikoran') ? (int) str_replace(['.', ','], '', $request->insentif_transaksikoran) : 0;
+
+        $komisi         = $komisi_input > 0 ? $komisi_input : (int) round($dpp * 0.20);
+        $insentif       = $insentif_input > 0 ? $insentif_input : (int) round($dpp * 0.20);
 
         $transaksi->update([
             'tanggal_transaksikoran' => $request->tanggal_transaksikoran,

@@ -169,16 +169,31 @@
             document.getElementById('itemModal').classList.add('hidden');
         }
 
+        document.getElementById('itemForm').addEventListener('submit', function(e) {
+            const isEdit = document.querySelector('#methodContainer input[name="_method"]')?.value === 'PUT';
+            if (isEdit) {
+                e.preventDefault();
+                const form = this;
+                const kode = document.getElementById('modal_kode').value;
+                AppAlert.confirmSave({
+                    title: 'Simpan Perubahan',
+                    subtitle: 'Data jenis iklan akan diperbarui',
+                    target: kode,
+                    confirmText: 'Ya, Simpan'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
+        });
+
         async function deleteItem(id, kode) {
-            Swal.fire({
-                title: 'Hapus Jenis Iklan?',
-                text: 'Data ' + kode + ' akan dihapus dari sistem secara permanen.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Ya, Hapus Data',
-                cancelButtonText: 'Batal'
+            AppAlert.confirmDelete({
+                title: 'Hapus Jenis Iklan',
+                subtitle: 'Tindakan ini tidak dapat dibatalkan',
+                target: kode,
+                confirmText: 'Ya, Hapus Jenis Iklan'
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
@@ -187,14 +202,18 @@
                             _method: 'DELETE',
                             _token: token
                         });
-                        Swal.fire({
-                            title: 'Terhapus',
-                            text: 'Data jenis iklan berhasil dihapus.',
-                            icon: 'success',
-                            confirmButtonColor: '#0A72AC',
+                        AppAlert.success({
+                            title: 'Berhasil Dihapus',
+                            subtitle: 'Data telah dihapus dari sistem',
+                            message: 'Jenis iklan ' + kode + ' berhasil dihapus.'
                         }).then(() => location.reload());
                     } catch (error) {
-                        Swal.fire('Gagal', 'Terjadi kesalahan saat menghapus data.', 'error');
+                        AppAlert.error({
+                            title: 'Gagal Menghapus',
+                            subtitle: error.response?.data?.message ? 'Permintaan Ditolak' : 'Terjadi kesalahan sistem',
+                            message: error.response?.data?.message || 'Terjadi kesalahan saat menghapus data jenis iklan.',
+                            buttonText: 'Tutup'
+                        });
                     }
                 }
             });

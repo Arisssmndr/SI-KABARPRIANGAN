@@ -160,12 +160,11 @@
 
                         @foreach ($data as $t)
                             @php
-                                $nilai = $t->harga_transaksionline;
-                                $dpp = $nilai / 1.11;
-                                $ppn = $nilai - $dpp;
-                                $komisi = $dpp * 0.2;
-                                $sisa_untuk_insentif = $dpp - $komisi;
-                                $insentif = $sisa_untuk_insentif * 0.2;
+                                $nilai = $t->totaltagihan_transaksionline > 0 ? $t->totaltagihan_transaksionline : ($t->harga_transaksionline * ($t->total_muatiklanonline ?? 1));
+                                $ppn = $t->ppn_transaksionline > 0 ? $t->ppn_transaksionline : ($nilai - ($nilai / 1.11));
+                                $dpp = max(0, $nilai - $ppn);
+                                $komisi = $t->komisi_transaksionline > 0 ? $t->komisi_transaksionline : ($dpp * 0.2);
+                                $insentif = $t->insentif_transaksionline > 0 ? $t->insentif_transaksionline : (($dpp - $komisi) * 0.2);
 
                                 $grand_nilai += $nilai;
                                 $grand_ppn += $ppn;
@@ -180,7 +179,7 @@
                                 <td class="tengah">
                                     {{ \Carbon\Carbon::parse($t->tanggal_transaksionline)->format('d/m/Y') }}</td>
                                 <td>{{ $t->nama_pemasangonline }}</td>
-                                <td class="tengah">{{ $t->iklanonline->jenis_iklanonline ?? '-' }}</td>
+                                <td class="tengah">{{ $t->iklanonline?->jenis_iklanonline ?? '-' }}</td>
                                 <td class="tengah">
                                     {{ \Carbon\Carbon::parse($t->tanggal_muatiklanonline)->format('d/m/Y') }}</td>
 

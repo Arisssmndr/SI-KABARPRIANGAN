@@ -164,27 +164,12 @@
 
                         @foreach ($data as $t)
                             @php
-                                // --- LOGIKA PERHITUNGAN (Disamakan dengan Online) ---
+                                $nilai = $t->totaltagihan_transaksipriangan > 0 ? $t->totaltagihan_transaksipriangan : $t->harga_transaksipriangan;
+                                $ppn = $t->ppn_transaksipriangan > 0 ? $t->ppn_transaksipriangan : ($nilai - ($nilai / 1.11));
+                                $dpp = max(0, $nilai - $ppn);
+                                $komisi = $t->komisi_transaksipriangan > 0 ? $t->komisi_transaksipriangan : ($dpp * 0.2);
+                                $insentif = $t->insentif_transaksipriangan > 0 ? $t->insentif_transaksipriangan : (($dpp - $komisi) * 0.2);
 
-                                // 1. NILAI (Total Tagihan dari Database Priangan)
-                                $nilai = $t->harga_transaksipriangan;
-
-                                // 2. DPP (Back Calculation / Tax Inclusive)
-                                // Rumus: Nilai / 1.11
-                                $dpp = $nilai / 1.11;
-
-                                // 3. PPN
-                                // Rumus: Nilai - DPP
-                                $ppn = $nilai - $dpp;
-
-                                // 4. KOMISI (20% dari DPP)
-                                $komisi = $dpp * 0.2;
-
-                                // 5. INSENTIF (20% dari Sisa DPP setelah dikurangi Komisi)
-                                $sisa_untuk_insentif = $dpp - $komisi;
-                                $insentif = $sisa_untuk_insentif * 0.2;
-
-                                // --- Akumulasi Grand Total ---
                                 $grand_nilai += $nilai;
                                 $grand_ppn += $ppn;
                                 $grand_dpp += $dpp;
@@ -198,7 +183,7 @@
                                 <td class="tengah">
                                     {{ \Carbon\Carbon::parse($t->tanggal_transaksipriangan)->format('d/m/Y') }}</td>
                                 <td>{{ $t->nama_pemasangpriangan }}</td>
-                                <td class="tengah">{{ $t->iklanpriangan->jenis_iklanpriangan }}</td>
+                                <td class="tengah">{{ $t->iklanpriangan?->jenis_iklanpriangan ?? '-' }}</td>
                                 <td class="tengah">
                                     {{ \Carbon\Carbon::parse($t->tanggal_muatiklanpriangan)->format('d/m/Y') }}</td>
                                 {{-- NILAI --}}

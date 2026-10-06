@@ -76,4 +76,17 @@
             </div>
         </form>
     </div>
+
+    @if ($errors->any() || session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                AppAlert.error({
+                    title: 'Login Gagal',
+                    subtitle: 'Autentikasi tidak berhasil',
+                    message: '{{ $errors->first() ?: session('error') }}',
+                    buttonText: 'Coba Lagi'
+                });
+            });
+        </script>
+    @endif
 </x-guest-layout>
