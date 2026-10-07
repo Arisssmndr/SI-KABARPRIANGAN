@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\IklanPriangan;
+use App\Models\JenisIklan;
 use App\Models\TransaksiPriangan;
 use Illuminate\Http\Request;
 
@@ -33,7 +33,7 @@ class TransaksiIklanPrianganController extends Controller
         }
 
         $transaksipriangan = $query->paginate(10)->withQueryString();
-        $iklanpriangan = IklanPriangan::all();
+        $iklanpriangan = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'PTV'))->get();
 
         return view('page.transaksipriangan.index', compact('transaksipriangan', 'iklanpriangan'));
     }
@@ -43,7 +43,7 @@ class TransaksiIklanPrianganController extends Controller
      */
     public function create()
     {
-        $iklanpriangan = IklanPriangan::all();
+        $iklanpriangan = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'PTV'))->get();
         $nofakturpriangan = TransaksiPriangan::createCode();
         return view('page.transaksipriangan.create', compact('nofakturpriangan', 'iklanpriangan'));
     }

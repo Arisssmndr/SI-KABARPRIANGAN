@@ -26,6 +26,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        [x-cloak] { display: none !important; }
         .select2-container .select2-selection--single {
             width: 100% !important;
             background-color: #ffffff;
@@ -139,15 +140,10 @@
                     </button>
 
                     <!-- Dropdown Menu -->
-                    <div x-show="userMenuOpen" 
-                         x-transition:enter="transition ease-out duration-100"
-                         x-transition:enter-start="transform opacity-0 scale-95"
-                         x-transition:enter-end="transform opacity-100 scale-100"
-                         x-transition:leave="transition ease-in duration-75"
-                         x-transition:leave-start="transform opacity-100 scale-100"
-                         x-transition:leave-end="transform opacity-0 scale-95"
-                         class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-200 py-1.5 z-50 divide-y divide-slate-100"
-                         style="display: none;">
+                    <div x-cloak
+                         x-show="userMenuOpen" 
+                         x-transition.duration.150ms
+                         class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-200 py-1.5 z-50 divide-y divide-slate-100">
                         
                         <div class="px-3.5 py-2">
                             <p class="text-xs font-semibold text-black">{{ Auth::user()->name }}</p>
@@ -159,8 +155,11 @@
 
                         <div class="py-1">
                             <a href="{{ route('profile.edit') }}" 
-                               class="flex items-center px-3.5 py-2 text-xs text-gray-800 hover:bg-slate-50 hover:text-kp-blue-600 transition font-medium">
-                                Profil Saya
+                               class="flex items-center gap-2 px-3.5 py-2 text-xs text-gray-800 hover:bg-slate-50 hover:text-kp-blue-600 transition font-medium">
+                                <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                                <span>Profil Saya</span>
                             </a>
                         </div>
 
@@ -169,8 +168,11 @@
                                 @csrf
                                 <button type="button" 
                                         onclick="confirmLogout()"
-                                        class="w-full text-left px-3.5 py-2 text-xs text-rose-600 hover:bg-rose-50 transition font-medium cursor-pointer">
-                                    Keluar
+                                        class="w-full text-left px-3.5 py-2 text-xs text-rose-600 hover:bg-rose-50 transition font-medium cursor-pointer flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                    </svg>
+                                    <span>Keluar</span>
                                 </button>
                             </form>
                         </div>

@@ -32,7 +32,7 @@ class TransaksiPriangan extends Model
 
     public function iklanpriangan()
     {
-        return $this->belongsTo(IklanPriangan::class, 'id_iklanpriangan');
+        return $this->belongsTo(JenisIklan::class, 'id_iklanpriangan');
     }
 
     public static function createCode(){

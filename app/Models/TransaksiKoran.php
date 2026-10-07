@@ -35,7 +35,7 @@ class TransaksiKoran extends Model
 
     public function iklankoran()
     {
-        return $this->belongsTo(IklanKoran::class, 'id_iklankoran');
+        return $this->belongsTo(JenisIklan::class, 'id_iklankoran');
     }
 
     public static function createCode()

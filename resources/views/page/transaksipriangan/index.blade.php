@@ -13,8 +13,11 @@
             </div>
             <div>
                 <a href="{{ route('transaksipriangan.create') }}" 
-                   class="inline-flex items-center px-4 py-2 bg-kp-blue-600 hover:bg-kp-blue-700 active:bg-kp-blue-800 text-white text-xs font-semibold rounded-lg shadow-sm transition">
-                    + Transaksi Baru
+                   class="inline-flex items-center gap-2 px-4 py-2.5 bg-kp-blue-600 hover:bg-kp-blue-700 active:bg-kp-blue-800 text-white text-xs font-semibold rounded-xl shadow-xs hover:shadow transition-all duration-150">
+                    <svg class="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    <span>Transaksi Baru</span>
                 </a>
             </div>
         </div>
@@ -165,7 +168,7 @@
                         @empty
                             <tr>
                                 <td colspan="12" class="py-12 text-center text-slate-500 font-normal">
-                                    Belum ada data transaksi. Klik "+ Transaksi Baru" untuk menambah data.
+                                    Belum ada data transaksi. Klik "Transaksi Baru" untuk menambah data.
                                 </td>
                             </tr>
                         @endforelse

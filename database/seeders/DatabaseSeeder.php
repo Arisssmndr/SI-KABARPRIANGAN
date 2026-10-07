@@ -26,6 +26,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $this->call(IklanMasterSeeder::class);
+        $this->call([
+            KategoriDanJenisIklanSeeder::class,
+            SampleTransaksiSeeder::class,
+        ]);
     }
 }

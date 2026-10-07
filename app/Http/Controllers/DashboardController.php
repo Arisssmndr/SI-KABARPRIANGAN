@@ -2,67 +2,260 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JenisIklan;
+use App\Models\KategoriMedia;
 use App\Models\TransaksiKoran;
 use App\Models\TransaksiOnline;
 use App\Models\TransaksiPriangan;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
-    public function index()
+    /**
+     * Tampilkan Executive Dashboard Kasir Multimedia Kabar Priangan
+     */
+    public function index(Request $request)
     {
+        $range = $request->input('range', 'month');
         $now = Carbon::now();
-        $startOfMonth = $now->copy()->startOfMonth()->toDateString();
-        $endOfMonth = $now->copy()->endOfMonth()->toDateString();
-        $today = $now->toDateString();
 
-        // 1. Data Iklan Koran
-        $omzetKoran = TransaksiKoran::whereBetween('tanggal_transaksikoran', [$startOfMonth, $endOfMonth])
-            ->sum('totaltagihan_transaksikoran');
-        $piutangKoran = TransaksiKoran::sum('piutang_transaksikoran');
-        $countKoran = TransaksiKoran::count();
-        $todayKoran = TransaksiKoran::whereDate('tanggal_transaksikoran', $today)->count();
+        // 1. Tentukan rentang waktu berdasarkan filter
+        switch ($range) {
+            case 'today':
+                $startDate = $now->toDateString();
+                $endDate = $now->toDateString();
+                $rangeTitle = 'Hari Ini';
+                $rangeSub = $now->translatedFormat('d M Y');
+                $rangeLabel = 'Hari Ini (' . $now->translatedFormat('d M Y') . ')';
+                break;
+            case '7days':
+            case 'week':
+                $range = '7days';
+                $startDate = $now->copy()->subDays(6)->toDateString();
+                $endDate = $now->toDateString();
+                $rangeTitle = '7 Hari Terakhir';
+                $rangeSub = Carbon::parse($startDate)->translatedFormat('d M') . ' - ' . $now->translatedFormat('d M Y');
+                $rangeLabel = '7 Hari Terakhir (' . $rangeSub . ')';
+                break;
+            case '30days':
+                $startDate = $now->copy()->subDays(29)->toDateString();
+                $endDate = $now->toDateString();
+                $rangeTitle = '30 Hari Terakhir';
+                $rangeSub = Carbon::parse($startDate)->translatedFormat('d M') . ' - ' . $now->translatedFormat('d M Y');
+                $rangeLabel = '30 Hari Terakhir (' . $rangeSub . ')';
+                break;
+            case 'last_month':
+                $subMonth = $now->copy()->subMonth();
+                $startDate = $subMonth->copy()->startOfMonth()->toDateString();
+                $endDate = $subMonth->copy()->endOfMonth()->toDateString();
+                $rangeTitle = 'Bulan Lalu';
+                $rangeSub = $subMonth->translatedFormat('F Y');
+                $rangeLabel = 'Bulan Lalu (' . $rangeSub . ')';
+                break;
+            case 'year':
+                $startDate = $now->copy()->startOfYear()->toDateString();
+                $endDate = $now->copy()->endOfYear()->toDateString();
+                $rangeTitle = 'Tahun Ini';
+                $rangeSub = $now->translatedFormat('Y');
+                $rangeLabel = 'Tahun Ini (' . $now->translatedFormat('Y') . ')';
+                break;
+            case 'custom':
+                $startDate = $request->input('dari', $now->copy()->startOfMonth()->toDateString());
+                $endDate = $request->input('sampai', $now->toDateString());
+                $rangeTitle = 'Kustom';
+                $rangeSub = Carbon::parse($startDate)->translatedFormat('d M') . ' - ' . Carbon::parse($endDate)->translatedFormat('d M Y');
+                $rangeLabel = 'Kustom (' . $rangeSub . ')';
+                break;
+            case 'month':
+            default:
+                $startDate = $now->copy()->startOfMonth()->toDateString();
+                $endDate = $now->copy()->endOfMonth()->toDateString();
+                $rangeTitle = 'Bulan Ini';
+                $rangeSub = $now->translatedFormat('F Y');
+                $rangeLabel = 'Bulan Ini (' . $rangeSub . ')';
+                $range = 'month';
+                break;
+        }
 
-        // 2. Data Iklan Online
-        $omzetOnline = TransaksiOnline::whereBetween('tanggal_transaksionline', [$startOfMonth, $endOfMonth])
-            ->sum('totaltagihan_transaksionline');
-        $piutangOnline = TransaksiOnline::sum('piutang_transaksionline');
-        $countOnline = TransaksiOnline::count();
-        $todayOnline = TransaksiOnline::whereDate('tanggal_transaksionline', $today)->count();
+        $dari = $startDate;
+        $sampai = $endDate;
 
-        // 3. Data Iklan TV (Priangan TV)
-        $omzetTv = TransaksiPriangan::whereBetween('tanggal_transaksipriangan', [$startOfMonth, $endOfMonth])
-            ->sum('totaltagihan_transaksipriangan');
-        $piutangTv = TransaksiPriangan::sum('piutang_transaksipriangan');
-        $countTv = TransaksiPriangan::count();
-        $todayTv = TransaksiPriangan::whereDate('tanggal_transaksipriangan', $today)->count();
+        // 2. Query Transaksi Per Saluran Media
+        // A. Koran Cetak
+        $koranQuery = TransaksiKoran::whereBetween('tanggal_transaksikoran', [$startDate, $endDate]);
+        $omzetKoran = (int) $koranQuery->sum('totaltagihan_transaksikoran');
+        $bayarKoran = (int) $koranQuery->sum('jumlahbayar_transaksikoran');
+        $piutangKoran = (int) $koranQuery->sum('piutang_transaksikoran');
+        $countKoran = (int) $koranQuery->count();
 
-        // Total Gabungan
-        $totalOmzetBulanIni = $omzetKoran + $omzetOnline + $omzetTv;
+        // B. Media Online
+        $onlineQuery = TransaksiOnline::whereBetween('tanggal_transaksionline', [$startDate, $endDate]);
+        $omzetOnline = (int) $onlineQuery->sum('totaltagihan_transaksionline');
+        $bayarOnline = (int) $onlineQuery->sum('jumlahbayar_transaksionline');
+        $piutangOnline = (int) $onlineQuery->sum('piutang_transaksionline');
+        $countOnline = (int) $onlineQuery->count();
+
+        // C. Priangan TV
+        $tvQuery = TransaksiPriangan::whereBetween('tanggal_transaksipriangan', [$startDate, $endDate]);
+        $omzetTv = (int) $tvQuery->sum('totaltagihan_transaksipriangan');
+        $bayarTv = (int) $tvQuery->sum('jumlahbayar_transaksipriangan');
+        $piutangTv = (int) $tvQuery->sum('piutang_transaksipriangan');
+        $countTv = (int) $tvQuery->count();
+
+        // 3. Agregasi Total
+        $totalOmset = $omzetKoran + $omzetOnline + $omzetTv;
+        $totalOmzet = $totalOmset;
+        $totalBayar = $bayarKoran + $bayarOnline + $bayarTv;
         $totalPiutang = $piutangKoran + $piutangOnline + $piutangTv;
         $totalTransaksi = $countKoran + $countOnline + $countTv;
-        $totalHariIni = $todayKoran + $todayOnline + $todayTv;
 
-        // 5 Transaksi Terbaru Masing-Masing
-        $recentKoran = TransaksiKoran::with('iklankoran')->latest('id')->take(3)->get();
-        $recentOnline = TransaksiOnline::with('iklanonline')->latest('id')->take(3)->get();
-        $recentTv = TransaksiPriangan::with('iklanpriangan')->latest('id')->take(3)->get();
+        // Persentase Kontribusi Omzet
+        $pctKoran = $totalOmset > 0 ? round(($omzetKoran / $totalOmset) * 100) : 0;
+        $pctOnline = $totalOmset > 0 ? round(($omzetOnline / $totalOmset) * 100) : 0;
+        $pctTv = $totalOmset > 0 ? round(($omzetTv / $totalOmset) * 100) : 0;
+
+        $channels = [
+            'koran' => [
+                'nama'       => 'Koran Cetak',
+                'sub'        => 'Harian Umum Kabar Priangan',
+                'kode'       => 'KRN',
+                'badge_bg'   => 'bg-sky-50 text-sky-700 border-sky-200',
+                'omzet'      => $omzetKoran,
+                'bayar'      => $bayarKoran,
+                'piutang'    => $piutangKoran,
+                'count'      => $countKoran,
+                'percent'    => $pctKoran,
+                'route_tx'   => 'transaksikoran.index',
+                'route_new'  => 'transaksikoran.create',
+            ],
+            'online' => [
+                'nama'       => 'Media Online',
+                'sub'        => 'kabarpriangan.pikiran-rakyat.com',
+                'kode'       => 'ONL',
+                'badge_bg'   => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                'omzet'      => $omzetOnline,
+                'bayar'      => $bayarOnline,
+                'piutang'    => $piutangOnline,
+                'count'      => $countOnline,
+                'percent'    => $pctOnline,
+                'route_tx'   => 'transaksionline.index',
+                'route_new'  => 'transaksionline.create',
+            ],
+            'tv' => [
+                'nama'       => 'Priangan TV',
+                'sub'        => 'Channel Siaran Televisi & Streaming',
+                'kode'       => 'PTV',
+                'badge_bg'   => 'bg-teal-50 text-teal-700 border-teal-200',
+                'omzet'      => $omzetTv,
+                'bayar'      => $bayarTv,
+                'piutang'    => $piutangTv,
+                'count'      => $countTv,
+                'percent'    => $pctTv,
+                'route_tx'   => 'transaksipriangan.index',
+                'route_new'  => 'transaksipriangan.create',
+            ],
+        ];
+
+        // 4. Data Master Ringkas
+        $totalKategori = KategoriMedia::where('is_active', true)->count();
+        $totalJenisIklan = JenisIklan::where('is_active', true)->count();
+
+        // 5. Transaksi Terbaru Gabungan (Top 6 Terbaru)
+        $recentTransactions = new Collection();
+
+        $recentKoran = TransaksiKoran::with('iklankoran')->latest('id')->take(4)->get();
+        foreach ($recentKoran as $k) {
+            $recentTransactions->push((object)[
+                'id'         => $k->id,
+                'channel'    => 'Koran Cetak',
+                'code'       => 'KRN',
+                'faktur'     => $k->nofakturkoran,
+                'tanggal'    => $k->tanggal_transaksikoran,
+                'customer'   => $k->nama_pemasangkoran,
+                'paket'      => $k->iklankoran->nama_jenis ?? '-',
+                'total'      => (int) $k->totaltagihan_transaksikoran,
+                'piutang'    => (int) $k->piutang_transaksikoran,
+                'is_lunas'   => (int) $k->piutang_transaksikoran <= 0,
+                'created_at' => $k->created_at,
+                'route_view' => route('transaksikoran.index'),
+            ]);
+        }
+
+        $recentOnline = TransaksiOnline::with('iklanonline')->latest('id')->take(4)->get();
+        foreach ($recentOnline as $o) {
+            $recentTransactions->push((object)[
+                'id'         => $o->id,
+                'channel'    => 'Media Online',
+                'code'       => 'ONL',
+                'faktur'     => $o->nofakturonline,
+                'tanggal'    => $o->tanggal_transaksionline,
+                'customer'   => $o->nama_pemasangonline,
+                'paket'      => $o->iklanonline->nama_jenis ?? '-',
+                'total'      => (int) $o->totaltagihan_transaksionline,
+                'piutang'    => (int) $o->piutang_transaksionline,
+                'is_lunas'   => (int) $o->piutang_transaksionline <= 0,
+                'created_at' => $o->created_at,
+                'route_view' => route('transaksionline.index'),
+            ]);
+        }
+
+        $recentTv = TransaksiPriangan::with('iklanpriangan')->latest('id')->take(4)->get();
+        foreach ($recentTv as $t) {
+            $recentTransactions->push((object)[
+                'id'         => $t->id,
+                'channel'    => 'Priangan TV',
+                'code'       => 'PTV',
+                'faktur'     => $t->nofakturpriangan,
+                'tanggal'    => $t->tanggal_transaksipriangan,
+                'customer'   => $t->nama_pemasangpriangan,
+                'paket'      => $t->iklanpriangan->nama_jenis ?? '-',
+                'total'      => (int) $t->totaltagihan_transaksipriangan,
+                'piutang'    => (int) $t->piutang_transaksipriangan,
+                'is_lunas'   => (int) $t->piutang_transaksipriangan <= 0,
+                'created_at' => $t->created_at,
+                'route_view' => route('transaksipriangan.index'),
+            ]);
+        }
+
+        // Urutkan transaksi gabungan berdasarkan created_at / tanggal desc dan batasi 6 item
+        $recentStream = $recentTransactions->sortByDesc('created_at')->take(6)->values();
+
+        // 6. Data Trend 7 Hari untuk Visual Chart
+        $dailyLabels = [];
+        $dailyKoran = [];
+        $dailyOnline = [];
+        $dailyTv = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $d = $now->copy()->subDays($i)->toDateString();
+            $dailyLabels[] = Carbon::parse($d)->translatedFormat('d M');
+            $dailyKoran[] = (int) TransaksiKoran::whereDate('tanggal_transaksikoran', $d)->sum('totaltagihan_transaksikoran');
+            $dailyOnline[] = (int) TransaksiOnline::whereDate('tanggal_transaksionline', $d)->sum('totaltagihan_transaksionline');
+            $dailyTv[] = (int) TransaksiPriangan::whereDate('tanggal_transaksipriangan', $d)->sum('totaltagihan_transaksipriangan');
+        }
 
         return view('dashboard', compact(
-            'totalOmzetBulanIni',
+            'range',
+            'rangeLabel',
+            'rangeTitle',
+            'rangeSub',
+            'dari',
+            'sampai',
+            'totalOmset',
+            'totalOmzet',
+            'totalBayar',
             'totalPiutang',
             'totalTransaksi',
-            'totalHariIni',
-            'omzetKoran',
-            'omzetOnline',
-            'omzetTv',
-            'countKoran',
-            'countOnline',
-            'countTv',
-            'recentKoran',
-            'recentOnline',
-            'recentTv'
+            'channels',
+            'totalKategori',
+            'totalJenisIklan',
+            'recentStream',
+            'dailyLabels',
+            'dailyKoran',
+            'dailyOnline',
+            'dailyTv'
         ));
     }
 }

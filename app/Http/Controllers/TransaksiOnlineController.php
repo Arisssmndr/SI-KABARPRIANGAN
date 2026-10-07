@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\IklanOnline;
+use App\Models\JenisIklan;
 use App\Models\TransaksiOnline;
 use Illuminate\Http\Request;
 
@@ -33,7 +33,7 @@ class TransaksiOnlineController extends Controller
         }
 
         $transaksionline = $query->paginate(10)->withQueryString();
-        $iklanonline = IklanOnline::all();
+        $iklanonline = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'ONL'))->get();
 
         return view('page.transaksionline.index', compact('transaksionline', 'iklanonline'));
     }
@@ -43,7 +43,7 @@ class TransaksiOnlineController extends Controller
      */
     public function create()
     {
-        $iklanonline = iklanOnline::all();
+        $iklanonline = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'ONL'))->get();
         $nofakturonline = TransaksiOnline::createCode();
         return view('page.transaksionline.create', compact('nofakturonline', 'iklanonline'));
     }
