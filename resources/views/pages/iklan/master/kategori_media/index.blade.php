@@ -1,22 +1,25 @@
 <x-app-layout>
     <div class="space-y-5">
 
-        <!-- Header Halaman -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-                <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-                    Master Kategori Media
-                </h1>
-                <p class="text-xs text-slate-500 mt-0.5">
-                    Pengelolaan unit dan saluran media periklanan (Koran Cetak, Portal Digital, Priangan TV, dll.)
-                </p>
+        <!-- Header Halaman Konsisten (Standar Laporan dengan Logo Kantor) -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex items-center gap-3.5">
+                <img src="{{ asset('kabarpriangan.png') }}" alt="Kabar Priangan" class="h-9 sm:h-10 w-auto object-contain shrink-0">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+                        Master Kategori Media
+                    </h1>
+                    <p class="text-xs font-normal text-slate-500 mt-0.5">
+                        Pengelolaan unit dan saluran media periklanan (Koran Cetak, Portal Digital, Priangan TV, dll.)
+                    </p>
+                </div>
             </div>
-            <div>
+            <div class="flex items-center gap-2.5">
                 <button type="button" 
                         onclick="openAddModal()" 
-                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-kp-blue-600 hover:bg-kp-blue-700 active:bg-kp-blue-800 text-white text-xs font-semibold rounded-xl shadow-xs hover:shadow transition-all duration-150 cursor-pointer">
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-kp-blue-600 hover:bg-kp-blue-700 active:bg-kp-blue-800 text-white text-xs font-semibold rounded-lg shadow-xs hover:shadow transition cursor-pointer">
                     <svg class="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4.5v15m7.5-7.5h-15" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
                     <span>Tambah Kategori</span>
                 </button>

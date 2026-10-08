@@ -46,7 +46,7 @@ class KategoriMediaController extends Controller
 
         $kategoriList = $query->paginate(10)->withQueryString();
 
-        return view('page.kategori_media.index', compact('kategoriList'));
+        return view('pages.iklan.master.kategori_media.index', compact('kategoriList'));
     }
 
     /**

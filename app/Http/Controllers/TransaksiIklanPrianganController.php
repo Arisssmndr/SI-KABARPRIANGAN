@@ -35,7 +35,7 @@ class TransaksiIklanPrianganController extends Controller
         $transaksipriangan = $query->paginate(10)->withQueryString();
         $iklanpriangan = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'PTV'))->get();
 
-        return view('page.transaksipriangan.index', compact('transaksipriangan', 'iklanpriangan'));
+        return view('pages.iklan.transaksi.priangan.index', compact('transaksipriangan', 'iklanpriangan'));
     }
 
     /**
@@ -45,7 +45,7 @@ class TransaksiIklanPrianganController extends Controller
     {
         $iklanpriangan = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'PTV'))->get();
         $nofakturpriangan = TransaksiPriangan::createCode();
-        return view('page.transaksipriangan.create', compact('nofakturpriangan', 'iklanpriangan'));
+        return view('pages.iklan.transaksi.priangan.create', compact('nofakturpriangan', 'iklanpriangan'));
     }
 
     public function cetak($id)
@@ -56,7 +56,7 @@ class TransaksiIklanPrianganController extends Controller
 
         // 2. Tampilkan view cetak
         // Pastikan path view sesuai dengan struktur folder Anda
-        return view('page.transaksipriangan.cetak', compact('transaksi'));
+        return view('pages.iklan.transaksi.priangan.cetak', compact('transaksi'));
     }
 
     /**

@@ -7,10 +7,10 @@
                 <img src="{{ asset('kabarpriangan.png') }}" alt="Kabar Priangan" class="h-9 sm:h-10 w-auto object-contain shrink-0">
                 <div>
                     <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-                        Laporan Keuangan
+                        Laporan Iklan
                     </h1>
                     <p class="text-xs font-normal text-slate-500 mt-0.5">
-                        Pusat rekapitulasi pembukuan dan status pembayaran iklan multi-kanal Kabar Priangan
+                        Pusat rekapitulasi data dan pembukuan transaksi periklanan multi-kanal Kabar Priangan
                     </p>
                 </div>
             </div>

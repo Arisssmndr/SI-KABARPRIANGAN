@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Rekapitulasi Keuangan - Kabar Priangan</title>
+    <title>Laporan Rekapitulasi Iklan - Kabar Priangan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -269,7 +269,7 @@
     <!-- Bar Aksi (Hanya di Layar) -->
     <div class="no-print">
         <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-weight: 700; font-size: 13px;">Pratinjau Cetak Laporan Keuangan</span>
+            <span style="font-weight: 700; font-size: 13px;">Pratinjau Cetak Laporan Iklan</span>
             <span style="font-size: 11px; opacity: 0.85;">&bull; Mode Siap Cetak (A4 / Letter)</span>
         </div>
         <div style="display: flex; items-center; gap: 8px;">

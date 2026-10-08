@@ -35,7 +35,7 @@ class TransaksiOnlineController extends Controller
         $transaksionline = $query->paginate(10)->withQueryString();
         $iklanonline = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'ONL'))->get();
 
-        return view('page.transaksionline.index', compact('transaksionline', 'iklanonline'));
+        return view('pages.iklan.transaksi.online.index', compact('transaksionline', 'iklanonline'));
     }
 
     /**
@@ -45,7 +45,7 @@ class TransaksiOnlineController extends Controller
     {
         $iklanonline = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'ONL'))->get();
         $nofakturonline = TransaksiOnline::createCode();
-        return view('page.transaksionline.create', compact('nofakturonline', 'iklanonline'));
+        return view('pages.iklan.transaksi.online.create', compact('nofakturonline', 'iklanonline'));
     }
 
     public function cetak($id)
@@ -54,7 +54,7 @@ class TransaksiOnlineController extends Controller
         $transaksi = TransaksiOnline::with('iklanonline')->findOrFail($id);
 
         // Arahkan ke view cetak
-        return view('page.transaksionline.cetak', compact('transaksi'));
+        return view('pages.iklan.transaksi.online.cetak', compact('transaksi'));
     }
     /**
      * Store a newly created resource in storage.

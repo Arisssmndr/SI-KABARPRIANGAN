@@ -131,7 +131,7 @@
                                 {{ Auth::user()->name }}
                             </div>
                             <div class="text-[10px] text-gray-500 font-normal">
-                                {{ Auth::user()->role ?? 'Kasir' }}
+                                {{ Auth::user()->role_label ?? 'Staf' }}
                             </div>
                         </div>
                         <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,7 +149,7 @@
                             <p class="text-xs font-semibold text-black">{{ Auth::user()->name }}</p>
                             <p class="text-[11px] text-gray-500 truncate">{{ Auth::user()->email }}</p>
                             <span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-medium uppercase rounded bg-kp-blue-50 text-kp-blue-700 border border-kp-blue-200">
-                                {{ Auth::user()->role ?? 'Kasir' }}
+                                {{ Auth::user()->role_label ?? 'Staf' }}
                             </span>
                         </div>
 

@@ -37,7 +37,7 @@ class TransaksiKoranController extends Controller
         $transaksikoran = $query->paginate(10)->withQueryString();
         $iklankoran = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'KRN'))->get();
 
-        return view('page.transaksikoran.index', compact('transaksikoran', 'iklankoran'));
+        return view('pages.iklan.transaksi.koran.index', compact('transaksikoran', 'iklankoran'));
     }
 
     /**
@@ -47,7 +47,7 @@ class TransaksiKoranController extends Controller
     {
         $iklankoran = JenisIklan::whereHas('kategoriMedia', fn($q) => $q->where('kode', 'KRN'))->get();
         $nofakturkoran = TransaksiKoran::createCode();
-        return view('page.transaksikoran.create', compact('nofakturkoran', 'iklankoran'));
+        return view('pages.iklan.transaksi.koran.create', compact('nofakturkoran', 'iklankoran'));
     }
 
     /**
@@ -201,6 +201,6 @@ class TransaksiKoranController extends Controller
     public function cetak($id)
     {
         $transaksi = TransaksiKoran::with('iklankoran')->findOrFail($id);
-        return view('page.transaksikoran.cetak', compact('transaksi'));
+        return view('pages.iklan.transaksi.koran.cetak', compact('transaksi'));
     }
 }

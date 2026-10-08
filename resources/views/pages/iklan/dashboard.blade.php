@@ -3,13 +3,16 @@
 
         <!-- Header Dashboard & Filter Periode Terpadu (Standar Enterprise) -->
         <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 relative z-20">
-            <div>
-                <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-                    Dashboard Kasir
-                </h1>
-                <p class="text-xs font-normal text-slate-500 mt-0.5">
-                    Ringkasan pembukuan transaksi periklanan multi-kanal Kabar Priangan
-                </p>
+            <div class="flex items-center gap-3.5">
+                <img src="{{ asset('kabarpriangan.png') }}" alt="Kabar Priangan" class="h-9 sm:h-10 w-auto object-contain shrink-0">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+                        Dashboard Iklan
+                    </h1>
+                    <p class="text-xs font-normal text-slate-500 mt-0.5">
+                        Ringkasan performa dan pembukuan periklanan multi-kanal Kabar Priangan (Koran Cetak, Online, & TV)
+                    </p>
+                </div>
             </div>
 
             <!-- Filter Periode (Standar Industri: Custom Popover, Fleksibel & Simpel) -->

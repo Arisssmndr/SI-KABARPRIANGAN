@@ -1,65 +1,105 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KategoriMediaController;
 use App\Http\Controllers\JenisIklanController;
-use App\Http\Controllers\LaporanKoranController;
-use App\Http\Controllers\LaporanOnlineController;
-use App\Http\Controllers\LaporanPrianganController;
+use App\Http\Controllers\KategoriMediaController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransaksiIklanPrianganController;
 use App\Http\Controllers\TransaksiKoranController;
 use App\Http\Controllers\TransaksiOnlineController;
 use Illuminate\Support\Facades\Route;
 
+// Halaman Depan
 Route::get('/', function () {
     return view('welcome');
 });
 
+// Central Dispatcher Dashboard: Mengarahkan otomatis ke dashboard divisi pengguna yang login
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// Master Data Terpadu (Standar Industri: 2 Menu Kategori & Tipe/Jenis Iklan)
-Route::resource('kategori-media', KategoriMediaController::class)->middleware('auth');
-Route::resource('jenis-iklan', JenisIklanController::class)->middleware('auth');
-Route::get('/api/kategori-media/{id}/next-code', [JenisIklanController::class, 'getNextCode'])
-    ->middleware('auth')
-    ->name('kategori-media.next-code');
+// ==========================================
+// 1. DASHBOARD ADMINISTRATOR (Superadmin)
+// ==========================================
+Route::middleware(['auth', 'role:administrator'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
+});
 
-// Rute Kategori Lama (Diarahkan ke Master Baru agar tidak terjadi error 404)
-Route::get('/iklankoran', fn() => redirect()->route('jenis-iklan.index'))->middleware('auth')->name('iklankoran.index');
-Route::get('/iklanonline', fn() => redirect()->route('jenis-iklan.index'))->middleware('auth')->name('iklanonline.index');
-Route::get('/iklanpriangan', fn() => redirect()->route('jenis-iklan.index'))->middleware('auth')->name('iklanpriangan.index');
+// ==========================================
+// 2. DIVISI IKLAN (Koran, Online, Priangan TV)
+// Akses: Role Iklan & Administrator
+// ==========================================
+Route::middleware(['auth', 'role:iklan'])->group(function () {
+    Route::get('/iklan/dashboard', [DashboardController::class, 'iklan'])->name('iklan.dashboard');
 
-// Transaksi Iklan
-Route::resource('transaksikoran', TransaksiKoranController::class)->middleware('auth');
-Route::get('/transaksikoran/{id}/cetak', [TransaksiKoranController::class, 'cetak'])
-    ->middleware('auth')
-    ->name('transaksikoran.cetak');
+    // Master Data Terpadu Iklan
+    Route::resource('kategori-media', KategoriMediaController::class);
+    Route::resource('jenis-iklan', JenisIklanController::class);
+    Route::get('/api/kategori-media/{id}/next-code', [JenisIklanController::class, 'getNextCode'])
+        ->name('kategori-media.next-code');
 
-Route::resource('transaksionline', TransaksiOnlineController::class)->middleware('auth');
-Route::get('/transaksionline/{id}/cetak', [TransaksiOnlineController::class, 'cetak'])
-    ->middleware('auth')
-    ->name('transaksionline.cetak');
+    // Pengalihan Rute Kategori Lama
+    Route::get('/iklankoran', fn() => redirect()->route('jenis-iklan.index'))->name('iklankoran.index');
+    Route::get('/iklanonline', fn() => redirect()->route('jenis-iklan.index'))->name('iklanonline.index');
+    Route::get('/iklanpriangan', fn() => redirect()->route('jenis-iklan.index'))->name('iklanpriangan.index');
 
-Route::resource('transaksipriangan', TransaksiIklanPrianganController::class)->middleware('auth');
-Route::get('/transaksipriangan/{id}/cetak', [TransaksiIklanPrianganController::class, 'cetak'])
-    ->middleware('auth')
-    ->name('transaksipriangan.cetak');
+    // Transaksi Iklan Koran
+    Route::resource('transaksikoran', TransaksiKoranController::class);
+    Route::get('/transaksikoran/{id}/cetak', [TransaksiKoranController::class, 'cetak'])->name('transaksikoran.cetak');
 
-use App\Http\Controllers\LaporanController;
+    // Transaksi Iklan Online
+    Route::resource('transaksionline', TransaksiOnlineController::class);
+    Route::get('/transaksionline/{id}/cetak', [TransaksiOnlineController::class, 'cetak'])->name('transaksionline.cetak');
 
-// Laporan Keuangan Terpadu (1 Pusat Laporan untuk Koran, Online, dan TV)
-Route::get('/laporan', [LaporanController::class, 'index'])->middleware('auth')->name('laporan.index');
-Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->middleware('auth')->name('laporan.cetak');
+    // Transaksi Iklan Priangan TV
+    Route::resource('transaksipriangan', TransaksiIklanPrianganController::class);
+    Route::get('/transaksipriangan/{id}/cetak', [TransaksiIklanPrianganController::class, 'cetak'])->name('transaksipriangan.cetak');
 
-// Pengalihan Rute Laporan Lama (Mencegah 404)
-Route::match(['get', 'post'], '/laporankoran', fn() => redirect()->route('laporan.index', ['media' => 'koran']))->middleware('auth')->name('laporankoran.index');
-Route::match(['get', 'post'], '/laporanonline', fn() => redirect()->route('laporan.index', ['media' => 'online']))->middleware('auth')->name('laporanonline.index');
-Route::match(['get', 'post'], '/laporanpriangan', fn() => redirect()->route('laporan.index', ['media' => 'tv']))->middleware('auth')->name('laporanpriangan.index');
+    // Laporan Keuangan Iklan Terpadu
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
 
-// Profil Pengguna
+    // Pengalihan Rute Laporan Lama
+    Route::match(['get', 'post'], '/laporankoran', fn() => redirect()->route('laporan.index', ['media' => 'koran']))->name('laporankoran.index');
+    Route::match(['get', 'post'], '/laporanonline', fn() => redirect()->route('laporan.index', ['media' => 'online']))->name('laporanonline.index');
+    Route::match(['get', 'post'], '/laporanpriangan', fn() => redirect()->route('laporan.index', ['media' => 'tv']))->name('laporanpriangan.index');
+});
+
+// ==========================================
+// 3. DIVISI KEUANGAN
+// Akses: Role Keuangan & Administrator
+// ==========================================
+Route::middleware(['auth', 'role:keuangan'])->group(function () {
+    Route::get('/keuangan/dashboard', [DashboardController::class, 'keuangan'])->name('keuangan.dashboard');
+});
+
+// ==========================================
+// 4. DIVISI ACCOUNTING
+// Akses: Role Accounting & Administrator
+// ==========================================
+Route::middleware(['auth', 'role:accounting'])->group(function () {
+    Route::get('/accounting/dashboard', [DashboardController::class, 'accounting'])->name('accounting.dashboard');
+});
+
+// ==========================================
+// 5. DIVISI SIRKULASI
+// Akses: Role Sirkulasi & Administrator
+// ==========================================
+Route::middleware(['auth', 'role:sirkulasi'])->group(function () {
+    Route::get('/sirkulasi/dashboard', [DashboardController::class, 'sirkulasi'])->name('sirkulasi.dashboard');
+});
+
+// ==========================================
+// 6. DIVISI KASIR
+// Akses: Role Kasir & Administrator
+// ==========================================
+Route::middleware(['auth', 'role:kasir'])->group(function () {
+    Route::get('/kasir/dashboard', [DashboardController::class, 'kasir'])->name('kasir.dashboard');
+});
+
+// Profil Pengguna (Semua Role)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

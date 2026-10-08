@@ -34,7 +34,7 @@ class JenisIklanController extends Controller
 
         $jenisList = $query->paginate(10)->withQueryString();
 
-        return view('page.jenis_iklan.index', compact('jenisList', 'kategoriList'));
+        return view('pages.iklan.master.jenis_iklan.index', compact('jenisList', 'kategoriList'));
     }
 
     /**

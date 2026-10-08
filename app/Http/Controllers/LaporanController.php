@@ -18,17 +18,17 @@ class LaporanController extends Controller
     {
         $filterData = $this->resolveReportData($request);
 
-        return view('page.laporan.index', $filterData);
+        return view('pages.iklan.laporan.index', $filterData);
     }
 
     /**
-     * Cetak dokumen resmi Laporan Keuangan (Print Friendly View)
+     * Cetak dokumen resmi Laporan Iklan (Print Friendly View)
      */
     public function cetak(Request $request)
     {
         $filterData = $this->resolveReportData($request);
 
-        return view('page.laporan.cetak', $filterData);
+        return view('pages.iklan.laporan.cetak', $filterData);
     }
 
     /**

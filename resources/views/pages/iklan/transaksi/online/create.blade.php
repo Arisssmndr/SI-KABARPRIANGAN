@@ -1,15 +1,25 @@
 <x-app-layout>
     <div class="max-w-4xl mx-auto space-y-5">
 
-        <!-- Header Halaman Bersih -->
-        <div class="flex items-center justify-between">
-            <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-                Tambah Transaksi Iklan Online
-            </h1>
-            <a href="{{ route('transaksionline.index') }}" 
-               class="inline-flex items-center px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg shadow-xs transition">
-                &larr; Kembali
-            </a>
+        <!-- Header Halaman Konsisten (Standar Laporan dengan Logo Kantor) -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex items-center gap-3.5">
+                <img src="{{ asset('kabarpriangan.png') }}" alt="Kabar Priangan" class="h-9 sm:h-10 w-auto object-contain shrink-0">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+                        Tambah Transaksi Iklan Online
+                    </h1>
+                    <p class="text-xs font-normal text-slate-500 mt-0.5">
+                        Formulir input faktur periklanan portal online Kabar Priangan
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+                <a href="{{ route('transaksionline.index') }}" 
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg shadow-xs transition cursor-pointer">
+                    &larr; <span>Kembali</span>
+                </a>
+            </div>
         </div>
 
         @if ($errors->any())
